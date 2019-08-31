@@ -1,0 +1,3 @@
+[submodule "AllegroCPPWrappers"]
+	path = AllegroCPPWrappers
+	url = git@github.com:cclark25/AllegroCPPWrappers.git
