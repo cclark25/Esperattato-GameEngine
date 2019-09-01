@@ -14,7 +14,7 @@ namespace Esperattato {
 		double before_timestamp = 0;
 		bool running = false;
 	public:
-		Process();
+		Process(void (*fun)(double, ThreadWorker));
 
 		double Execute(ThreadWorker worker);
 

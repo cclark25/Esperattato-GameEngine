@@ -5,8 +5,9 @@
 
 namespace Esperattato {
 	
-	Process::Process(){
+	Process::Process(void (*fun)(double, ThreadWorker)){
 		last_timestamp = al_get_time();
+		this->func_loop = fun;
 	}
 
 	double Process::Execute(ThreadWorker worker){

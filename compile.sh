@@ -1,1 +1,1 @@
-g++ ./src/main.cpp ./src/**/*.cpp AllegroCPPWrappers/src/**/*.cpp -lallegro -lallegro_image -pthread
+g++ ./src/**/*.cpp AllegroCPPWrappers/src/**/*.cpp ./src/main.cpp -lallegro -lallegro_image -pthread

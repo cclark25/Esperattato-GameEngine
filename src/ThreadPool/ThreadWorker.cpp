@@ -7,6 +7,7 @@
 #include <utility>
 #include <allegro5/allegro.h>
 #include "Process.h"
+#include <iostream>
 
 using namespace std;
 
@@ -49,7 +50,7 @@ namespace Esperattato {
 	void ThreadWorker::take_off_standby(){
 		if(data->inner_thread == nullptr){
 			data->state = active;
-			data->inner_thread = new thread(&ThreadWorker::process_cycle, *this);
+			data->inner_thread = new thread(&ThreadWorker::process_cycle, this);
 		}
 		if(data->state == standby){
 			data->should_start.notify_one();
@@ -62,8 +63,10 @@ namespace Esperattato {
 			Process process = data->processes->second.front();
 			data->processes->second.pop();
 			data->processes->first.unlock();
+			
 
 			process.Execute(*this);
+
 
 			data->processes->first.lock();
 			data->processes->second.push(process);
