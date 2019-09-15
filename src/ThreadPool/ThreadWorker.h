@@ -35,6 +35,8 @@ namespace Esperattato {
 			void take_off_standby();
 
 			void process_cycle();
+
+			void kill_worker();
 	};
 }
 

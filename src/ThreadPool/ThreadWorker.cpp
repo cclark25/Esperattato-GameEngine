@@ -38,12 +38,19 @@ namespace Esperattato {
 		data->reference_count--;
 		if(data->reference_count == 0){
 			data->state = deleted;
+			std::cout << "Threadworker state set to deleted.\n";
 			if(data->inner_thread != nullptr){
 				take_off_standby();
+				std::cout << "Threadworker taken off standby. Waiting on thread...\n";
 				data->inner_thread->join();
+				std::cout << "Threadworker terminated.\n";
 				delete data->inner_thread;
+				data->inner_thread = nullptr;
+				std::cout << "Inner thread deleted.\n";
 			}
 			delete data;
+			std::cout << "Data deleted.\n";
+
 		}
 	}
 
@@ -54,6 +61,20 @@ namespace Esperattato {
 		}
 		if(data->state == standby){
 			data->should_start.notify_one();
+		}
+	}
+
+	void ThreadWorker::kill_worker(){
+		data->state = deleted;
+		std::cout << "Threadworker state set to deleted.\n";
+		if(data->inner_thread != nullptr){
+			take_off_standby();
+			std::cout << "Threadworker taken off standby. Waiting on thread...\n";
+			data->inner_thread->join();
+			std::cout << "Threadworker terminated.\n";
+			delete data->inner_thread;
+			data->inner_thread = nullptr;
+			std::cout << "Inner thread deleted.\n";
 		}
 	}
 
