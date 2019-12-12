@@ -9,14 +9,14 @@ void f(double, ThreadWorker){
 	static unsigned int f;
 	f++;
 	std::cout << "Processing F: " << f << std::endl;
-	//usleep(500000);
+	usleep(500000);
 
 }
 void g(double, ThreadWorker){
 	static unsigned int g;
 	g++;
 	std::cout << "Processing G: " << g << std::endl;
-	//usleep(500000);
+	usleep(500000);
 }
 
 int main(){
