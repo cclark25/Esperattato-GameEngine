@@ -14,10 +14,12 @@ int main(){
 	Bitmap b2("/home/christopher/GIT/Esperattato/Dependencies/AllegroCPPWrappers/test.bmp");
 	Esperattato::Display d(512, 256, 60);
 	cout << "Width: " << b.get_bitmap_width() << "\tHeight: " << b.get_bitmap_height() << endl;
-	usleep(10000000);
-	d.pushFrame(b);
-	usleep(10000000);
+	
 	d.pushFrame(b2);
+	usleep(5000000);
+	d.setMaximized(true);
+	usleep(5000000);
+	d.setMaximized(false);
 	usleep(60000000);
 	return 0;
 }
