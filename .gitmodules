@@ -1,3 +1,6 @@
 [submodule "AllegroCPPWrappers"]
 	path = AllegroCPPWrappers
 	url = git@github.com:cclark25/AllegroCPPWrappers.git
+[submodule "Dependencies/AllegroCPPWrappers"]
+	path = Dependencies/AllegroCPPWrappers
+	url = https://github.com/cclark25/AllegroCPPWrappers.git
