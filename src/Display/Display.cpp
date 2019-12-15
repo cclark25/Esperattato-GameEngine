@@ -18,9 +18,9 @@ namespace Esperattato {
 			if (count % framerate == 0) {
 				cout << "Here: " << count << endl;
 			}
-			if(this->maximized != maximized){
-				bool result = internalDisplay.set_display_flag(ALLEGRO_MAXIMIZED,
-				                                 this->maximized);
+			if (this->maximized != maximized) {
+				bool result = internalDisplay.set_display_flag(
+				    ALLEGRO_MAXIMIZED, this->maximized);
 				cout << "Maximized: " << (result ? "true" : "false") << endl;
 				maximized = this->maximized;
 				this->newFrame = true;
@@ -60,6 +60,8 @@ namespace Esperattato {
 				} else {
 					double newWidth = this->currentFrame.get_bitmap_width();
 					double newHeight = this->currentFrame.get_bitmap_height();
+					newWidth *= this->pixelStretchX;
+					newHeight *= this->pixelStretchY;
 
 					const double xScale =
 					    ((double)internalDisplay.get_width()) / (newWidth);
@@ -134,18 +136,28 @@ namespace Esperattato {
 		this->frameless = onOff;
 		this->frameLock.unlock();
 		if (!onOff) {
-			cerr << "Warning: Attempt was made to set a display's frameless flag to OFF.\
+			cerr
+			    << "Warning: Attempt was made to set a display's frameless flag to OFF.\
 			\nSome unknown issue results in the window not being updated with a frame.\
 			\nThis error occurs on the Arch Linux OS and may be present on others too.\
-			\nTo ensure that your game runs on all platforms, either do not use frameless windows or find a fix for this issue in the game engine's source code." << endl;
+			\nTo ensure that your game runs on all platforms, either do not use frameless windows or find a fix for this issue in the game engine's source code."
+			    << endl;
 		}
 	}
 
-	void Display::setMaximized(bool onOff){
+	void Display::setMaximized(bool onOff) {
 		// this->frameLock.lock();
 		// this->maximized = onOff;
 		// this->frameLock.unlock();
-		cerr << "Warning: Display::setMaximized not implemented because the underlying Allegro code does not work." << endl;
+		cerr << "Warning: Display::setMaximized not implemented because the "
+		        "underlying Allegro code does not work."
+		     << endl;
 	}
 
+	void Display::setPixelStretch(double stretchFactorX,
+	                              double stretchFactorY) {
+		this->pixelStretchX = stretchFactorX;
+		this->pixelStretchY = stretchFactorY;
+		this->newFrame = true;
+	}
 } // namespace Esperattato
