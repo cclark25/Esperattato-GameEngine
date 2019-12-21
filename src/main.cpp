@@ -2,27 +2,31 @@
 // #include "./ThreadPool/Process.h"
 #include "Display/Display.h"
 #include <allegro5/allegro_image.h>
+#include <cmath>
 #include <iostream>
 #include <unistd.h>
 
 using namespace Esperattato;
 
-int main() {
+int main(int argc, char **args) {
 	al_init();
 	al_init_image_addon();
-	Bitmap b("/home/christopher/GIT/Esperattato/TestSprite.png");
-	Bitmap b2("/home/christopher/GIT/Esperattato/TestSprite2.png");
-	Esperattato::Display d(512, 256, 60);
-	cout << "Width: " << b.get_bitmap_width()
-	     << "\tHeight: " << b.get_bitmap_height() << endl;
 
+	Bitmap b(args[1]);
+	// Bitmap canvas(b.get_bitmap_width()+1, b.get_bitmap_height()+1);
+	cout << "Width: " << b.get_bitmap_width() << "\tHeight: " << b.get_bitmap_height() << endl;
+	Esperattato::Display d(512, 256, 60);
+	double i = 0;
 	while (true) {
+		// while (i < 1) {
 		d.pushFrame(b);
-		d.setPixelStretch(1, 1);
-		usleep(1000000);
-		d.pushFrame(b2);
-		d.setPixelStretch(7.0 / 6.0, 1);
-		usleep(1000000);
+		// d.setPixelStretch((sin(i += 0.1) / 2) + 0.5, 1);
+		usleep(1000);
+		// }
+		// cout << i << endl << sin(i) << endl << endl;
+
+		// i = -1;
 	}
+
 	return 0;
 }
