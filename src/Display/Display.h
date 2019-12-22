@@ -18,19 +18,9 @@ namespace Esperattato {
 
 	class Display {
 	  private:
-		thread *managingThread;
-		bool shouldStop = false;
-		bool newFrame = false;
-		bool resized = false;
-		bool fullScreen = false;
-		bool frameless = false;
-		bool maximized = false;
+		AllegroWrappers::Display internalDisplay;
 		double pixelStretchX = 1;
 		double pixelStretchY = 1;
-		int width, height;
-		mutex frameLock;
-		Bitmap currentFrame;
-		void manageDisplay(int width, int height, int framerate);
 
 	  protected:
 	  public:
@@ -45,8 +35,10 @@ namespace Esperattato {
 		void setFrameless(bool onOff);
 		void setMaximized(bool onOff);
 
-		/* 	Used to specify a stretch to apply to an image before stretching it to meet the Display's resolution.
-			Useful for immitating the SNES graphics that stretch pixels horizontally by a ratio of 7.0:6.0 to fit 4:3 TV sets.
+		/* 	Used to specify a stretch to apply to an image before stretching it
+		   to meet the Display's resolution. Useful for immitating the SNES
+		   graphics that stretch pixels horizontally by a ratio of 7.0:6.0 to
+		   fit 4:3 TV sets.
 		*/
 		void setPixelStretch(double stretchX, double stretchY);
 	};

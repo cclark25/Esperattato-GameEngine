@@ -13,18 +13,35 @@ int main(int argc, char **args) {
 	al_init_image_addon();
 
 	Bitmap b(args[1]);
-	// Bitmap canvas(b.get_bitmap_width()+1, b.get_bitmap_height()+1);
-	cout << "Width: " << b.get_bitmap_width() << "\tHeight: " << b.get_bitmap_height() << endl;
+	Bitmap canvas(256, 224);
+	cout << "Width: " << b.get_bitmap_width()
+	     << "\tHeight: " << b.get_bitmap_height() << endl;
 	Esperattato::Display d(512, 256, 60);
-	d.setPixelStretch(7.0/6.0, 1.0);
+	d.setPixelStretch(7.0 / 6.0, 1.0);
+	Transform t;
 	int i = 0;
 	while (true) {
-		// while (i < 1) {
-		d.pushFrame(b);
-		d.setPixelStretch(1, (((i % 2) == 0) ? (7.0/6.0) : 1));
-		usleep(1000000);
-		i++;
-		// }
+		while (i < canvas.get_bitmap_width() - b.get_bitmap_width()) {
+			t.translate_transform(1, 0);
+			canvas.use_transform(t);
+			canvas.clear_to_color(Color((unsigned char)0, 0, 0));
+			canvas.draw_bitmap(b, 0, 0, 0);
+			d.pushFrame(canvas);
+
+			usleep(1000000.0 / 24.0);
+			i += 1;
+		}
+		cout << "Switching directions." << endl;
+		while (i > 0) {
+			t.translate_transform(-1, 0);
+			canvas.use_transform(t);
+			canvas.clear_to_color(Color((unsigned char)0, 0, 0));
+			canvas.draw_bitmap(b, 0, 0, 0);
+			d.pushFrame(canvas);
+
+			usleep(1000000.0 / 24.0);
+			i -= 1;
+		}
 		// cout << i << endl << sin(i) << endl << endl;
 
 		// i = -1;
