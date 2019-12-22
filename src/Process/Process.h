@@ -2,7 +2,7 @@
 #define ESPERATTATO_PROCESS_DEF
 
 
-namespace Esperattato {
+namespace Esperatto {
 	class ThreadWorker;
 
 	class Process {	

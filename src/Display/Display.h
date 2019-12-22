@@ -8,7 +8,7 @@
 using namespace std;
 using namespace AllegroWrappers;
 
-namespace Esperattato {
+namespace Esperatto {
 	enum STRETCH_MODE : unsigned char {
 		MAINTAIN_ASPECT_RATIO,
 		STRETCH_TO_FILL,

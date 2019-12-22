@@ -6,7 +6,7 @@
 #include <iostream>
 #include <unistd.h>
 
-using namespace Esperattato;
+using namespace Esperatto;
 
 int main(int argc, char **args) {
 	al_init();
@@ -16,7 +16,7 @@ int main(int argc, char **args) {
 	Bitmap canvas(256, 224);
 	cout << "Width: " << b.get_bitmap_width()
 	     << "\tHeight: " << b.get_bitmap_height() << endl;
-	Esperattato::Display d(512, 256, 60);
+	Esperatto::Display d(512, 256, 60);
 	d.setPixelStretch(7.0 / 6.0, 1.0);
 	Transform t;
 	int i = 0;

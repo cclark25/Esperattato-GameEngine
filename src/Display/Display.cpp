@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-namespace Esperattato {
+namespace Esperatto {
 	Display::Display(int width, int height, int framerate)
 	    : internalDisplay(
 	          (AllegroWrappers::Display::set_new_display_refresh_rate(

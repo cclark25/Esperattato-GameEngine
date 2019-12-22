@@ -3,7 +3,7 @@
 #include <allegro5/allegro.h>
 #include "../ThreadWorker/ThreadWorker.h"
 
-namespace Esperattato {
+namespace Esperatto {
 	
 	Process::Process(void (*fun)(double, ThreadWorker)){
 		last_timestamp = al_get_time();

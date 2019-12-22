@@ -12,7 +12,7 @@
 using namespace std;
 
 
-namespace Esperattato {
+namespace Esperatto {
 
 	typedef pair<mutex, queue<Process>> ThreadWork;
 	struct ThreadWorker::foreign_data {
