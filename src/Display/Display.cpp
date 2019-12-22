@@ -15,9 +15,6 @@ namespace Esperattato {
 		uint count = 0;
 		while (!shouldStop) {
 			this->frameLock.lock();
-			if (count % framerate == 0) {
-				cout << "Here: " << count << endl;
-			}
 			if (this->maximized != maximized) {
 				bool result = internalDisplay.set_display_flag(
 				    ALLEGRO_MAXIMIZED, this->maximized);
@@ -60,32 +57,48 @@ namespace Esperattato {
 					    internalDisplay.get_width(),
 					    internalDisplay.get_height(), 0);
 				} else {
+					Transform t;
 					double newWidth = this->currentFrame.get_bitmap_width();
 					double newHeight = this->currentFrame.get_bitmap_height();
-					newWidth *= this->pixelStretchX;
-					newHeight *= this->pixelStretchY;
+					// newWidth *= this->pixelStretchX;
+					// newHeight *= this->pixelStretchY;
 
-					const double xScale =
-					    ((double)internalDisplay.get_width()) / (newWidth);
-					const double yScale =
-					    ((double)internalDisplay.get_height()) / (newHeight);
+					double xScale = ((double)internalDisplay.get_width()) /
+					                (newWidth * this->pixelStretchX);
+					double yScale = ((double)internalDisplay.get_height()) /
+					                (newHeight * this->pixelStretchY);
 
 					switch (this->stretchMode) {
 					case MAINTAIN_ASPECT_RATIO:
-						newWidth *= fmin(xScale, yScale);
-						newHeight *= fmin(xScale, yScale);
+						const double scale = fmin(xScale, yScale);
+						newWidth *= scale;
+						newHeight *= scale;
+						xScale = scale;
+						yScale = scale;
+						// newWidth *= fmin(xScale, yScale);
+						// newHeight *= fmin(xScale, yScale);
 						break;
 					}
 
-					const double newX =
-					    (internalDisplay.get_width() - newWidth) / 2;
-					const double newY =
-					    (internalDisplay.get_height() - newHeight) / 2;
-					internalDisplay.get_backbuffer().draw_scaled_bitmap(
-					    this->currentFrame, 0, 0,
-					    this->currentFrame.get_bitmap_width(),
-					    this->currentFrame.get_bitmap_height(), newX, newY,
-					    newWidth, newHeight, 0);
+					const double newX = (internalDisplay.get_width() -
+					                     (newWidth * this->pixelStretchX)) /
+					                    2.0;
+					const double newY = (internalDisplay.get_height() -
+					                     (newHeight * this->pixelStretchY)) /
+					                    2.0;
+
+					t.scale_transform(xScale * this->pixelStretchX,
+					                  yScale * this->pixelStretchY);
+					t.translate_transform(newX, newY);
+
+					internalDisplay.get_backbuffer().use_transform(t);
+					internalDisplay.get_backbuffer().draw_bitmap(
+					    this->currentFrame, 0, 0, 0);
+					// internalDisplay.get_backbuffer().draw_scaled_bitmap(
+					//     this->currentFrame, 0, 0,
+					//     this->currentFrame.get_bitmap_width(),
+					//     this->currentFrame.get_bitmap_height(), newX, newY,
+					//     newWidth, newHeight, 0);
 				}
 				this->newFrame = false;
 				internalDisplay.flip_display();

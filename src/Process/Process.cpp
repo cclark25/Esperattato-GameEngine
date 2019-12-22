@@ -1,7 +1,7 @@
 #include "Process.h"
 #include <mutex>
 #include <allegro5/allegro.h>
-#include "ThreadWorker.h"
+#include "../ThreadWorker/ThreadWorker.h"
 
 namespace Esperattato {
 	

@@ -16,12 +16,14 @@ int main(int argc, char **args) {
 	// Bitmap canvas(b.get_bitmap_width()+1, b.get_bitmap_height()+1);
 	cout << "Width: " << b.get_bitmap_width() << "\tHeight: " << b.get_bitmap_height() << endl;
 	Esperattato::Display d(512, 256, 60);
-	double i = 0;
+	d.setPixelStretch(7.0/6.0, 1.0);
+	int i = 0;
 	while (true) {
 		// while (i < 1) {
 		d.pushFrame(b);
-		// d.setPixelStretch((sin(i += 0.1) / 2) + 0.5, 1);
-		usleep(1000);
+		d.setPixelStretch(1, (((i % 2) == 0) ? (7.0/6.0) : 1));
+		usleep(1000000);
+		i++;
 		// }
 		// cout << i << endl << sin(i) << endl << endl;
 

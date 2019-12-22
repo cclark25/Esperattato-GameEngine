@@ -1,7 +1,7 @@
 #ifndef ESPERATTATO_DISPLAY_DEF
 #define ESPERATTATO_DISPLAY_DEF
-#include "../Dependencies/AllegroCPPWrappers/src/Bitmap/Bitmap.h"
-#include "../Dependencies/AllegroCPPWrappers/src/Display/Display.h"
+#include "../../Dependencies/AllegroCPPWrappers/src/Bitmap/Bitmap.h"
+#include "../../Dependencies/AllegroCPPWrappers/src/Display/Display.h"
 #include <mutex>
 #include <thread>
 

@@ -6,7 +6,7 @@
 #include <queue>
 #include <utility>
 #include <allegro5/allegro.h>
-#include "Process.h"
+#include "../Process/Process.h"
 #include <iostream>
 
 using namespace std;
