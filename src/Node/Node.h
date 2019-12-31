@@ -1,5 +1,5 @@
-#ifndef ESPERATTATO_DISPLAY_DEF
-#define ESPERATTATO_DISPLAY_DEF
+#ifndef ESPERATTATO_NODE_DEF
+#define ESPERATTATO_NODE_DEF
 
 #include "../../Dependencies/AllegroCPPWrappers/src/Transform/Transform.h"
 #include <set>
@@ -49,9 +49,12 @@ namespace Esperatto {
 		void removeChild(Node child);
 		multiset<Node> &getChildren();
 
+		Coordinates getGlobalPosition();
+
 		friend bool operator<(const Node &first, const Node &second) {
 			return first.data->zIndex < second.data->zIndex;
 		};
+
 	};
 } // namespace Esperattato
 

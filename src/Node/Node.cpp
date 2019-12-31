@@ -53,7 +53,7 @@ namespace Esperatto {
 	double Node::getRotationInParent() { return this->data->rotationRadians; }
 
 	void Node::addChild(Node child) {
-		this->data->children.insert((const Node&)child);
+		this->data->children.insert((const Node &)child);
 		if (child.data->parent == nullptr) {
 			child.data->parent = this->data;
 		} else {
@@ -64,11 +64,25 @@ namespace Esperatto {
 		}
 	}
 
-	void Node::removeChild(Node child){
-		this->data->children.erase(child);
+	void Node::removeChild(Node child) { this->data->children.erase(child); }
+
+	Coordinates Node::getGlobalPosition() {
+		foreign_data *level = this->data;
+		Coordinates result = {0, 0};
+
+		while (true) {
+			result.x += level->xPosition;
+			result.y += level->yPosition;
+			if (level->parent != nullptr) {
+				level = level->parent;
+			} else {
+				break;
+			}
+		}
+		return result;
 	}
 
-	multiset<Node> &Node::getChildren(){
+	multiset<Node> &Node::getChildren() {
 		return this->data->children;
 		// return *(const multiset<const Node>*)(void*) &this->data->children;
 	}
