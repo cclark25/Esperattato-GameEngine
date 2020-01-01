@@ -19,15 +19,18 @@ int main(int argc, char **args) {
 
 	Node last = root;
 
-	for(int i = 0; i < 1000000; i++){
+	for(int i = 0; i < 1000; i++){
 		Node newNode;
 		newNode.setPositionInParent(0.01,0.02);
 		last.addChild(newNode);
 		last = newNode;
 	}
 
-	auto pos = last.getGlobalPosition();
-	cout << "Lowest node: " << pos.x << ", " << pos.y << endl;
+	// auto pos = last.getGlobalPosition();
+	// cout << "Lowest node: " << pos.x << ", " << pos.y << endl;
+	
+	auto flatList = root.makeNodeSet();
+	cout << "List length: " << flatList.size() << endl;
 
 	return 0;
 }

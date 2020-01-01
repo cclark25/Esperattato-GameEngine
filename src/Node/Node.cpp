@@ -1,5 +1,7 @@
 #include "./Node.h"
+#include <iostream>
 #include <stdexcept>
+using namespace std;
 
 namespace Esperatto {
 	Node::Node() {
@@ -79,6 +81,86 @@ namespace Esperatto {
 				break;
 			}
 		}
+		return result;
+	}
+
+	double Node::getGlobalRotation() {
+		foreign_data *level = this->data;
+		double result = 0;
+
+		while (true) {
+			result += level->rotationRadians;
+			if (level->parent != nullptr) {
+				level = level->parent;
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	double Node::getGlobalXScale() {
+		foreign_data *level = this->data;
+		double result = 0;
+
+		while (true) {
+			result += level->xScale;
+			if (level->parent != nullptr) {
+				level = level->parent;
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	double Node::getGlobalYScale() {
+		foreign_data *level = this->data;
+		double result = 0;
+
+		while (true) {
+			result += level->yScale;
+			if (level->parent != nullptr) {
+				level = level->parent;
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	double Node::getGlobalZIndex() {
+		foreign_data *level = this->data;
+		double result = 0;
+
+		while (true) {
+			result += level->zIndex;
+			if (level->parent != nullptr) {
+				level = level->parent;
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	multiset<SovereignNode> Node::makeNodeSet(Transform rootTransform,
+	                                          double rootZIndex) {
+		multiset<SovereignNode> result;
+		Transform thisTransform = rootTransform.copy_transform();
+		thisTransform.translate_transform(this->data->xPosition,
+		                                  this->data->yPosition);
+		thisTransform.rotate_transform(this->data->rotationRadians);
+		thisTransform.scale_transform(this->data->xScale, this->data->yScale);
+		double globalZIndex = rootZIndex + this->data->zIndex;
+
+		result.insert({thisTransform, *this, globalZIndex});
+
+		for (Node child : this->data->children) {
+			result.merge(child.makeNodeSet(thisTransform, globalZIndex));
+		}
+		// cout << "i: " << i-- << endl;
+
 		return result;
 	}
 
