@@ -3,6 +3,7 @@
 
 #include "../../Dependencies/AllegroCPPWrappers/src/Transform/Transform.h"
 #include <set>
+#include <functional>
 using namespace AllegroWrappers;
 using namespace std;
 
@@ -46,6 +47,8 @@ namespace Esperatto {
 		void setScaleInParent(double xScale, double yScale);
 		double getXScaleInParent();
 		double getYScaleInParent();
+		double getZIndexInParent();
+		void setZIndexInParent(double);
 
 		void addChild(Node child);
 		void removeChild(Node child);
@@ -57,9 +60,14 @@ namespace Esperatto {
 		double getGlobalYScale();
 		double getGlobalZIndex();
 
+		void *getParentPointer();
+		void *getSelfPointer();
+
 		multiset<SovereignNode>
 		makeNodeSet(Transform rootTransform = Transform(),
 		            double rootZIndex = 0);
+
+		void foreach(function<void (Node)> func);
 
 		friend bool operator<(const Node &first, const Node &second) {
 			return first.data->zIndex < second.data->zIndex;

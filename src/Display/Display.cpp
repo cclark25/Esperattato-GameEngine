@@ -91,9 +91,17 @@ namespace Esperatto {
 		this->internalDisplay.set_display_flag(ALLEGRO_MAXIMIZED, onOff);
 	}
 
+	void Display::drawToBackbuffer(Bitmap b) {
+		internalDisplay.get_backbuffer().draw_bitmap(b, 0, 0, 0);
+	}
+
+	void Display::flipDisplay(){
+		internalDisplay.flip_display();
+	}
+
 	void Display::setPixelStretch(double stretchFactorX,
 	                              double stretchFactorY) {
 		this->pixelStretchX = stretchFactorX;
 		this->pixelStretchY = stretchFactorY;
 	}
-} // namespace Esperattato
+} // namespace Esperatto

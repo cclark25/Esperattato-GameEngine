@@ -9,8 +9,8 @@ namespace Esperatto {
 		this->data->referenceCount = 1;
 	}
 
-	Node::Node(const Node &original) {
-		this->data = original.data;
+	Node::Node(const Node &original): data(original.data) {
+		// this->data = original.data;
 		data->referenceCount++;
 	}
 
@@ -144,6 +144,12 @@ namespace Esperatto {
 		return result;
 	}
 
+	void *Node::getParentPointer() { return this->data->parent; }
+	void *Node::getSelfPointer() { return this->data; }
+
+	double Node::getZIndexInParent() { return this->data->zIndex; }
+	void Node::setZIndexInParent(double newZ) { this->data->zIndex = newZ; }
+
 	multiset<SovereignNode> Node::makeNodeSet(Transform rootTransform,
 	                                          double rootZIndex) {
 		multiset<SovereignNode> result;
@@ -162,6 +168,13 @@ namespace Esperatto {
 		// cout << "i: " << i-- << endl;
 
 		return result;
+	}
+
+	void Node::foreach (function<void(Node)> func) {
+		func(*this);
+		for (Node child : this->data->children) {
+			child.foreach (func);
+		}
 	}
 
 	multiset<Node> &Node::getChildren() {
