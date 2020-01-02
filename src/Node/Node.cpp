@@ -172,6 +172,7 @@ namespace Esperatto {
 
 	void Node::foreach (function<void(Node)> func) {
 		func(*this);
+		
 		for (Node child : this->data->children) {
 			child.foreach (func);
 		}

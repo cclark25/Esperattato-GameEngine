@@ -34,8 +34,6 @@ namespace Esperatto {
 		void setFullscreen(bool onOff);
 		void setFrameless(bool onOff);
 		void setMaximized(bool onOff);
-		void drawToBackbuffer(Bitmap b);
-		void flipDisplay();
 
 		/* 	Used to specify a stretch to apply to an image before stretching it
 		   to meet the Display's resolution. Useful for immitating the SNES
