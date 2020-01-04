@@ -19,8 +19,9 @@ int main(int argc, char **args) {
 
 	root.setPositionInParent(1, 1);
 
-	Esperatto::Display d(1080, 720, 360);
-	Bitmap b("Test_Files/stock_image.png");
+	Esperatto::Display d(256, 224, 360);
+	Bitmap b("Test_Files/RedBox.png");
+	Bitmap b2(256, 224);
 
 	Node last = root;
 	for (int i = 0; i < 50; i++) {
@@ -36,10 +37,12 @@ int main(int argc, char **args) {
 	const int i = 500;
 	double total = 0;
 	d.setFullscreen(true);
-	d.setPixelStretch(7.0/6.0, 1);
+	d.setPixelStretch(7.0 / 6.0, 1);
 	for (int j = i; j > 0; j--) {
 		static map<void *, double> *parentMap = new map<void *, double>();
+		Bitmap b3 = Bitmap(256, 224);
 		auto before = chrono::high_resolution_clock::now();
+		b3.clear_to_color(Color((unsigned char) 0, 0, 0));
 		root.foreach ([&](Node n) {
 			static auto &map = *parentMap;
 			static double z = 0;
@@ -50,16 +53,22 @@ int main(int argc, char **args) {
 			}
 			map[(n.getSelfPointer())] =
 			    n.getZIndexInParent() + (x ? map[x] : 0);
-			static Bitmap b2(68,56) ;
+			static int xPos = 0;
 			// b.draw_scaled_bitmap(b2, 0, 0, 256, 224, 0, 0, 256, 224, 0);
-			b.draw_bitmap(b2, 0, 0, 0);
+			// if (b3.shouldDraw(b, xPos - 128, 0)) {
+			// 	b3.draw_rotated_bitmap(b, 128, 112, xPos - 128, 0,
+			// 	                       0*(xPos) * (3.1216 / 6), 0);
+			// }
+			xPos++;
+			xPos = (xPos % (2*3072));
+			b3.draw_bitmap(b, xPos, xPos , 0);
 			// std::cout << "Z: " << z << endl;
 		});
 		// delete parentMap;
-		d.pushFrame(b);
+		d.pushFrame(b3);
 		total += 1 / chrono::duration_cast<chrono::duration<double>>(
-		        chrono::high_resolution_clock::now() - before)
-		        .count();
+		                 chrono::high_resolution_clock::now() - before)
+		                 .count();
 	}
 	cout << "Average Framerate: " << total / i << endl;
 	// std::cout << "Time: "
