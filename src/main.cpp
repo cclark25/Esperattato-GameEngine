@@ -27,8 +27,8 @@ int main(int argc, char **args) {
 		Node newNode;
 		newNode.setPositionInParent(0.01, 0.02);
 		newNode.setZIndexInParent(0.01);
-		root.addChild(newNode);
-		// last = newNode;
+		last.addChild(newNode);
+		last = newNode;
 	}
 
 	// auto pos = last.getGlobalPosition();
@@ -36,28 +36,30 @@ int main(int argc, char **args) {
 	const int i = 500;
 	double total = 0;
 	d.setFullscreen(true);
+	d.setPixelStretch(7.0/6.0, 1);
 	for (int j = i; j > 0; j--) {
 		static map<void *, double> *parentMap = new map<void *, double>();
 		auto before = chrono::high_resolution_clock::now();
 		root.foreach ([&](Node n) {
-			// static auto &map = *parentMap;
-			// static double z = 0;
-			// z = n.getZIndexInParent();
-			// static auto x = n.getParentPointer();
-			// if (x) {
-			// 	z += map.at(x);
-			// }
-			// map[(n.getSelfPointer())] =
-			//     n.getZIndexInParent() + (x ? map[x] : 0);
-			static Bitmap b2(256, 224);
+			static auto &map = *parentMap;
+			static double z = 0;
+			z = n.getZIndexInParent();
+			static auto x = n.getParentPointer();
+			if (x) {
+				z += map.at(x);
+			}
+			map[(n.getSelfPointer())] =
+			    n.getZIndexInParent() + (x ? map[x] : 0);
+			static Bitmap b2(68,56) ;
+			// b.draw_scaled_bitmap(b2, 0, 0, 256, 224, 0, 0, 256, 224, 0);
 			b.draw_bitmap(b2, 0, 0, 0);
 			// std::cout << "Z: " << z << endl;
 		});
 		// delete parentMap;
+		d.pushFrame(b);
 		total += 1 / chrono::duration_cast<chrono::duration<double>>(
 		        chrono::high_resolution_clock::now() - before)
 		        .count();
-		d.pushFrame(b);
 	}
 	cout << "Average Framerate: " << total / i << endl;
 	// std::cout << "Time: "
