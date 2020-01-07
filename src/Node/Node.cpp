@@ -150,20 +150,40 @@ namespace Esperatto {
 	double Node::getZIndexInParent() { return this->data->zIndex; }
 	void Node::setZIndexInParent(double newZ) { this->data->zIndex = newZ; }
 
-	multiset<SovereignNode> Node::makeNodeSet(Transform rootTransform,
-	                                          double rootZIndex) {
+	multiset<SovereignNode> Node::makeNodeSet() {
 		multiset<SovereignNode> result;
-		Transform thisTransform = rootTransform.copy_transform();
-		thisTransform.translate_transform(this->data->xPosition,
+		Transform thisTransform;
+		al_translate_transform(&thisTransform, this->data->xPosition,
 		                                  this->data->yPosition);
-		thisTransform.rotate_transform(this->data->rotationRadians);
-		thisTransform.scale_transform(this->data->xScale, this->data->yScale);
-		double globalZIndex = rootZIndex + this->data->zIndex;
+		al_rotate_transform(&thisTransform, this->data->rotationRadians);
+		al_scale_transform(&thisTransform, this->data->xScale, this->data->yScale);
+		double globalZIndex = this->data->zIndex;
 
-		result.insert({thisTransform, *this, globalZIndex});
+		SovereignNode sov = {sov, thisTransform, *this, globalZIndex};
+		result.insert(sov);
 
 		for (Node child : this->data->children) {
-			result.merge(child.makeNodeSet(thisTransform, globalZIndex));
+			result.merge(child.makeNodeSet(sov));
+		}
+		// cout << "i: " << i-- << endl;
+
+		return result;
+	}
+	multiset<SovereignNode> Node::makeNodeSet(SovereignNode parent) {
+		multiset<SovereignNode> result;
+		Transform thisTransform;
+		al_copy_transform(&thisTransform, &parent.transformation);
+		al_translate_transform(&thisTransform, this->data->xPosition,
+		                                  this->data->yPosition);
+		al_rotate_transform(&thisTransform, this->data->rotationRadians);
+		al_scale_transform(&thisTransform, this->data->xScale, this->data->yScale);
+		double globalZIndex = parent.globalZIndex + this->data->zIndex;
+
+		SovereignNode sov = {parent, thisTransform, *this, globalZIndex};
+		result.insert(sov);
+
+		for (Node child : this->data->children) {
+			result.merge(child.makeNodeSet(sov));
 		}
 		// cout << "i: " << i-- << endl;
 

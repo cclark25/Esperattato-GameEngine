@@ -1,10 +1,9 @@
 #ifndef ESPERATTATO_NODE_DEF
 #define ESPERATTATO_NODE_DEF
 
-#include "../../Dependencies/AllegroCPPWrappers/src/Transform/Transform.h"
-#include <set>
 #include <functional>
-using namespace AllegroWrappers;
+#include <set>
+#include "../Types.h"
 using namespace std;
 
 namespace Esperatto {
@@ -63,11 +62,11 @@ namespace Esperatto {
 		void *getParentPointer();
 		void *getSelfPointer();
 
-		multiset<SovereignNode>
-		makeNodeSet(Transform rootTransform = Transform(),
-		            double rootZIndex = 0);
+		multiset<SovereignNode> makeNodeSet();
 
-		void foreach(function<void (Node)> func);
+		multiset<SovereignNode> makeNodeSet(SovereignNode parent);
+
+		void foreach (function<void(Node)> func);
 
 		friend bool operator<(const Node &first, const Node &second) {
 			return first.data->zIndex < second.data->zIndex;
@@ -75,6 +74,7 @@ namespace Esperatto {
 	};
 
 	struct SovereignNode {
+		SovereignNode &parent;
 		Transform transformation;
 		Node node;
 		double globalZIndex;

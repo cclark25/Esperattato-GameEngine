@@ -1,12 +1,11 @@
 #ifndef ESPERATTATO_DISPLAY_DEF
 #define ESPERATTATO_DISPLAY_DEF
-#include "../../Dependencies/AllegroCPPWrappers/src/Bitmap/Bitmap.h"
-#include "../../Dependencies/AllegroCPPWrappers/src/Display/Display.h"
 #include <mutex>
 #include <thread>
+#include "../Types.h"
+#include <allegro5/allegro5.h>
 
 using namespace std;
-using namespace AllegroWrappers;
 
 namespace Esperatto {
 	enum STRETCH_MODE : unsigned char {
@@ -16,9 +15,9 @@ namespace Esperatto {
 		STRETCH_VERTICALLY
 	};
 
-	class Display {
+	class Screen {
 	  private:
-		AllegroWrappers::Display internalDisplay;
+		Display internalDisplay;
 		double pixelStretchX = 1;
 		double pixelStretchY = 1;
 
@@ -26,9 +25,9 @@ namespace Esperatto {
 	  public:
 		STRETCH_MODE stretchMode = MAINTAIN_ASPECT_RATIO;
 
-		Display(Display &source);
-		Display(int width, int height, int framerate);
-		~Display();
+		Screen(Screen &source);
+		Screen(int width, int height, int framerate);
+		~Screen();
 		void pushFrame(Bitmap frame);
 		void resize(int newWidth, int newHeight);
 		void setFullscreen(bool onOff);
