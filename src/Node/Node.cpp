@@ -9,7 +9,7 @@ namespace Esperatto {
 		this->data->referenceCount = 1;
 	}
 
-	Node::Node(const Node &original): data(original.data) {
+	Node::Node(const Node &original) : data(original.data) {
 		// this->data = original.data;
 		data->referenceCount++;
 	}
@@ -150,13 +150,28 @@ namespace Esperatto {
 	double Node::getZIndexInParent() { return this->data->zIndex; }
 	void Node::setZIndexInParent(double newZ) { this->data->zIndex = newZ; }
 
+	Coordinates Node::getCenterOfRotation() {
+		return Coordinates({data->xCenterOfRotation, data->yCenterOfRotation});
+	}
+
+	void Node::setCenterOfRotation(double x, double y) {
+		data->xCenterOfRotation = x;
+		data->yCenterOfRotation = y;
+	}
+
 	multiset<SovereignNode> Node::makeNodeSet() {
 		multiset<SovereignNode> result;
 		Transform thisTransform;
-		al_translate_transform(&thisTransform, this->data->xPosition,
-		                                  this->data->yPosition);
+		al_identity_transform(&thisTransform);
+		al_translate_transform(
+		    &thisTransform,
+		    this->data->xPosition - this->data->xCenterOfRotation,
+		    this->data->yPosition - this->data->yCenterOfRotation);
 		al_rotate_transform(&thisTransform, this->data->rotationRadians);
-		al_scale_transform(&thisTransform, this->data->xScale, this->data->yScale);
+		al_translate_transform(&thisTransform, this->data->xCenterOfRotation,
+		                       this->data->yCenterOfRotation);
+		al_scale_transform(&thisTransform, this->data->xScale,
+		                   this->data->yScale);
 		double globalZIndex = this->data->zIndex;
 
 		SovereignNode sov = {sov, thisTransform, *this, globalZIndex};
@@ -172,11 +187,18 @@ namespace Esperatto {
 	multiset<SovereignNode> Node::makeNodeSet(SovereignNode parent) {
 		multiset<SovereignNode> result;
 		Transform thisTransform;
-		al_copy_transform(&thisTransform, &parent.transformation);
-		al_translate_transform(&thisTransform, this->data->xPosition,
-		                                  this->data->yPosition);
+		al_identity_transform(&thisTransform);
+		al_translate_transform(
+		    &thisTransform,
+		    this->data->xPosition - this->data->xCenterOfRotation,
+		    this->data->yPosition - this->data->yCenterOfRotation);
 		al_rotate_transform(&thisTransform, this->data->rotationRadians);
-		al_scale_transform(&thisTransform, this->data->xScale, this->data->yScale);
+		al_translate_transform(&thisTransform, this->data->xCenterOfRotation,
+		                       this->data->yCenterOfRotation);
+		al_scale_transform(&thisTransform, this->data->xScale,
+		                   this->data->yScale);
+		
+		al_compose_transform(&thisTransform, &parent.transformation);
 		double globalZIndex = parent.globalZIndex + this->data->zIndex;
 
 		SovereignNode sov = {parent, thisTransform, *this, globalZIndex};
@@ -192,7 +214,7 @@ namespace Esperatto {
 
 	void Node::foreach (function<void(Node)> func) {
 		func(*this);
-		
+
 		for (Node child : this->data->children) {
 			child.foreach (func);
 		}

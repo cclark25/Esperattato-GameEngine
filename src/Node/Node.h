@@ -19,6 +19,8 @@ namespace Esperatto {
 		struct foreign_data {
 			double xPosition = 0;
 			double yPosition = 0;
+			double xCenterOfRotation = 0;
+			double yCenterOfRotation = 0;
 			double rotationRadians = 0;
 			double xScale = 1;
 			double yScale = 1;
@@ -48,6 +50,9 @@ namespace Esperatto {
 		double getYScaleInParent();
 		double getZIndexInParent();
 		void setZIndexInParent(double);
+
+		Coordinates getCenterOfRotation();
+		void setCenterOfRotation(double x, double y);
 
 		void addChild(Node child);
 		void removeChild(Node child);
