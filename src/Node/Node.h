@@ -85,7 +85,7 @@ namespace Esperatto {
 		void *getParentPointer();
 		void *getSelfPointer();
 
-		multiset<SovereignNode> makeNodeSet();
+		multiset<SovereignNode> makeNodeSet(Transform &baseTransform);
 
 		multiset<SovereignNode> makeNodeSet(SovereignNode parent);
 

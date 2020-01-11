@@ -154,7 +154,7 @@ namespace Esperatto {
 		data->yCenterOfRotation = y;
 	}
 
-	multiset<SovereignNode> Node::makeNodeSet() {
+	multiset<SovereignNode> Node::makeNodeSet(Transform &baseTransform) {
 		multiset<SovereignNode> result;
 		Transform thisTransform;
 		al_identity_transform(&thisTransform);
@@ -167,6 +167,9 @@ namespace Esperatto {
 		                       this->data->yCenterOfRotation);
 		al_scale_transform(&thisTransform, this->data->xScale,
 		                   this->data->yScale);
+
+		al_compose_transform(&thisTransform, &baseTransform);
+		
 		double globalZIndex = this->data->zIndex;
 
 		SovereignNode sov = {sov, thisTransform, *this, globalZIndex};

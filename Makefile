@@ -5,7 +5,7 @@ CXXFLAGS= -std=c++17
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
-./BUILD/Esperattato.o: $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Process.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Node.o
+./BUILD/Esperattato.o: $(OUT_DIR)/Camera.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Process.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Node.o
 	g++ $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image
 
 # $(DEPENDENCIES):
@@ -16,6 +16,9 @@ test: ./BUILD/Esperattato.o
 
 $(OUT_DIR)/Node.o: $(OUT_DIR)/NodeSubTypes.o ./src/Node/Node.h ./src/Node/Node.cpp
 	$(CXX) $(CXXFLAGS)  -c ./src/Node/Node.cpp $(OUT_DIR)/NodeSubTypes.o -fPIC -o "$(OUT_DIR)/Node.o"
+
+$(OUT_DIR)/Camera.o: ./src/Camera/Camera.cpp ./src/Camera/Camera.h
+	$(CXX) $(CXXFLAGS)  -c ./src/Camera/Camera.cpp -fPIC -o "$(OUT_DIR)/Camera.o"
 
 $(OUT_DIR)/NodeSubTypes.o: ./src/Node/NodeSubTypes.h ./src/Node/NodeSubTypes.cpp
 	$(CXX) $(CXXFLAGS)  -c ./src/Node/NodeSubTypes.cpp -fPIC -o "$(OUT_DIR)/NodeSubTypes.o"
