@@ -7,6 +7,8 @@ namespace Esperatto {
 	typedef ALLEGRO_DISPLAY* Display;
 	typedef ALLEGRO_BITMAP* Bitmap;
 	typedef ALLEGRO_COLOR Color;
+
+	
 }
 
 #endif

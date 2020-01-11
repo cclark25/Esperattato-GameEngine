@@ -4,13 +4,8 @@
 using namespace std;
 
 namespace Esperatto {
-	Node::Node() {
-		this->data = new foreign_data();
-		this->data->referenceCount = 1;
-	}
 
 	Node::Node(const Node &original) : data(original.data) {
-		// this->data = original.data;
 		data->referenceCount++;
 	}
 
@@ -197,7 +192,7 @@ namespace Esperatto {
 		                       this->data->yCenterOfRotation);
 		al_scale_transform(&thisTransform, this->data->xScale,
 		                   this->data->yScale);
-		
+
 		al_compose_transform(&thisTransform, &parent.transformation);
 		double globalZIndex = parent.globalZIndex + this->data->zIndex;
 
@@ -218,6 +213,12 @@ namespace Esperatto {
 		for (Node child : this->data->children) {
 			child.foreach (func);
 		}
+	}
+
+	size_t Node::getSubType() { return this->data->subdata.getType(); }
+
+	void *Node::getDataPtr(){
+		return this->data->subdata.getData();
 	}
 
 	multiset<Node> &Node::getChildren() {
