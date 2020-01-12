@@ -6,13 +6,13 @@ OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
 ./BUILD/Esperattato.o: $(OUT_DIR)/Camera.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Process.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Node.o
-	g++ $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image
+	g++ $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives
 
 # $(DEPENDENCIES):
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
 
 test: ./BUILD/Esperattato.o
-	$(CXX) $(CXXFLAGS) src/main.cpp BUILD/Esperattato.o -lallegro -lallegro_image
+	$(CXX) $(CXXFLAGS) src/main.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives
 
 $(OUT_DIR)/Node.o: $(OUT_DIR)/NodeSubTypes.o ./src/Node/Node.h ./src/Node/Node.cpp
 	$(CXX) $(CXXFLAGS)  -c ./src/Node/Node.cpp $(OUT_DIR)/NodeSubTypes.o -fPIC -o "$(OUT_DIR)/Node.o"

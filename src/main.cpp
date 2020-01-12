@@ -5,6 +5,7 @@
 #include "Node/Node.h"
 #include "Screen/Screen.h"
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_primitives.h>
 #include <chrono>
 #include <cmath>
 #include <iostream>
@@ -16,6 +17,7 @@ using namespace Esperatto;
 int main(int argc, char **args) {
 	al_init();
 	al_init_image_addon();
+	al_init_primitives_addon();
 
 	Node root = Node(new char(1));
 
@@ -24,9 +26,9 @@ int main(int argc, char **args) {
 
 	Esperatto::Screen d(256, 224, 360);
 	Node last = root;
-	for (int i = 0; i < 50; i++) {
-		Node newNode(new Image("Test_Files/stock_image.png"));
-		// newNode.setPositionInParent(0.01, 0.02);
+	for (int i = 0; i < 120; i++) {
+		Node newNode(new Image("Test_Files/TestSprite2.png"));
+		newNode.setPositionInParent(40, 40);
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(128, 112);
 		last.addChild(newNode);
@@ -38,10 +40,19 @@ int main(int argc, char **args) {
 	d.setPixelStretch(7.0 / 6.0, 1);
 	Camera cam(d);
 	auto before = chrono::high_resolution_clock::now();
-	for (int j = i; j > 0; j--) {
+	cam.toggleAnchor(false);
+	for (int j = 0; j < i; j++) {
 		cam.drawToScreen(root);
 		// last.move(-2, 0);
-		cam.move(1, 0);
+		if (j < i / 4) {
+			cam.move(1, 0);
+		} else if (j < i / 2) {
+			cam.rotate(3.14159 / (i));
+		} else if (j < 3 * i / 4) {
+			cam.zoomIn(0.01);
+		} else {
+			cam.zoomIn(-0.01);
+		}
 	}
 	double total = chrono::duration_cast<chrono::duration<double>>(
 	                   chrono::high_resolution_clock::now() - before)
