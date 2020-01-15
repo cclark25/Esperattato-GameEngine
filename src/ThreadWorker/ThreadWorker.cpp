@@ -87,11 +87,14 @@ namespace Esperatto {
 			
 
 			process.Execute(*this);
-
+			cout << "ThreadWorker 1\n";
 
 			data->processes->first.lock();
+			cout << "ThreadWorker 2\n";
 			data->processes->second.push(process);
+			cout << "ThreadWorker 3\n";
 			data->processes->first.unlock();
+			cout << "ThreadWorker 4\n";
 					
 			if(data->state == deleted){
 				break;

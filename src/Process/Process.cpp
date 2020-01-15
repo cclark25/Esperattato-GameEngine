@@ -1,59 +1,64 @@
 #include "Process.h"
-#include <mutex>
-#include <allegro5/allegro.h>
 #include "../ThreadWorker/ThreadWorker.h"
+#include <allegro5/allegro.h>
+#include <mutex>
+#include <iostream>
+using namespace std;
 
 namespace Esperatto {
-	
-	Process::Process(void (*fun)(double, ThreadWorker)){
-		last_timestamp = al_get_time();
-		this->func_loop = fun;
+
+	Process::Process(std::function<void(double, ThreadWorker)> fun) {
+		data = new foreign_data();
+		data->last_timestamp = al_get_time();
+		data->func_loop = fun;
+		data->referenceCount = 1;
 	}
 
-	double Process::Execute(ThreadWorker worker){
-		call_counts++;
-		running = true;
-		before_timestamp = al_get_time();
-		func_loop(before_timestamp - last_timestamp, worker);
-		last_timestamp = al_get_time();
-		running = false;
-		total_runtime += last_timestamp - before_timestamp;
-		last_runtime = last_timestamp - before_timestamp;
-		before_timestamp = 0;
-		return last_runtime;
+	Process::Process(const Process &source) {
+		data = source.data;
+		data->referenceCount++;
 	}
 
-	double Process::get_last_runtime(){
-		return last_runtime;
-	}
-
-	double Process::get_last_timestamp(){
-		return last_timestamp;
-	}
-
-	double Process::get_total_runtime(){
-		return total_runtime;
-	}
-
-	double Process::get_current_runtime(){
-		if(running){
-			return al_get_time() - before_timestamp;
+	Process::~Process(){
+		data->referenceCount--;
+		if(data->referenceCount == 0){
+			delete data;
 		}
-		else {
+	}
+
+	double Process::Execute(ThreadWorker worker) {
+		data->call_counts++;
+		data->running = true;
+		data->before_timestamp = al_get_time();
+		data->func_loop(data->before_timestamp - data->last_timestamp, worker);
+		data->last_timestamp = al_get_time();
+		data->running = false;
+		data->total_runtime += data->last_timestamp - data->before_timestamp;
+		data->last_runtime = data->last_timestamp - data->before_timestamp;
+		data->before_timestamp = 0;
+		return data->last_runtime;
+	}
+
+	double Process::get_last_runtime() { return data->last_runtime; }
+
+	double Process::get_last_timestamp() { return data->last_timestamp; }
+
+	double Process::get_total_runtime() { return data->total_runtime; }
+
+	double Process::get_current_runtime() {
+		if (data->running) {
+			return al_get_time() - data->before_timestamp;
+		} else {
 			return 0;
 		}
 	}
 
-	double Process::get_average_runtime(){
-		return total_runtime / call_counts;
+	double Process::get_average_runtime() {
+		return data->total_runtime / data->call_counts;
 	}
 
-	bool Process::is_running(){
-		return running;
-	}
+	bool Process::is_running() { return data->running; }
 
-	unsigned int Process::get_call_counts(){
-		return call_counts;
-	}
-	
-}
+	unsigned int Process::get_call_counts() { return data->call_counts; }
+
+} // namespace Esperatto

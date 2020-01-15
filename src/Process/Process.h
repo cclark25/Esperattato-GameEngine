@@ -1,20 +1,27 @@
 #ifndef ESPERATTATO_PROCESS_DEF
 #define ESPERATTATO_PROCESS_DEF
 
+#include <functional>
 
 namespace Esperatto {
 	class ThreadWorker;
 
-	class Process {	
-		void (*func_loop)(double, ThreadWorker);
-		double last_timestamp;
-		unsigned int call_counts = 0;
-		double total_runtime = 0;
-		double last_runtime = 0;
-		double before_timestamp = 0;
-		bool running = false;
-	public:
-		Process(void (*fun)(double, ThreadWorker));
+	class Process {
+		struct foreign_data {
+			std::function<void(double, ThreadWorker)> func_loop;
+			double last_timestamp;
+			unsigned int call_counts = 0;
+			double total_runtime = 0;
+			double last_runtime = 0;
+			double before_timestamp = 0;
+			bool running = false;
+			unsigned int referenceCount = 0;
+		} * data;
+
+	  public:
+		Process(std::function<void(double, ThreadWorker)> fun);
+		Process(const Process &source);
+		~Process();
 
 		double Execute(ThreadWorker worker);
 
@@ -32,6 +39,6 @@ namespace Esperatto {
 
 		unsigned int get_call_counts();
 	};
-}
+} // namespace Esperatto
 
 #endif
