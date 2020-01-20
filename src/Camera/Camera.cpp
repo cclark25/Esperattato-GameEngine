@@ -1,4 +1,5 @@
 #include "./Camera.h"
+#include "../Animation/Animation.h"
 #include "../Image/Image.h"
 #include <allegro5/allegro_primitives.h>
 
@@ -43,11 +44,20 @@ namespace Esperatto {
 		al_invert_transform(&thisTransform);
 
 		for (SovereignNode node : rootNode.makeNodeSet(thisTransform)) {
-			if (this->shouldDraw(node.transformation, 0, 0, 0) &&
-			    node.node.getSubType() == typeid(Image).hash_code()) {
+			if (this->shouldDraw(node.transformation, 0, 0, 0)) {
 				al_use_transform(&node.transformation);
-				Bitmap layer = (*(Image *)node.node.getDataPtr()).getBitmap();
-				al_draw_bitmap(layer, 0, 0, 0);
+				Bitmap layer = nullptr;
+				if (node.node.getSubType() == typeid(Image).hash_code()) {
+					layer = (*(Image *)node.node.getDataPtr()).getBitmap();
+				} else if (node.node.getSubType() ==
+				           typeid(Animation).hash_code()) {
+					layer = (*(Animation *)node.node.getDataPtr()).getBitmap();
+				} else {
+					// throw bad_exception();
+				}
+				if (layer) {
+					al_draw_bitmap(layer, 0, 0, 0);
+				}
 			}
 		}
 

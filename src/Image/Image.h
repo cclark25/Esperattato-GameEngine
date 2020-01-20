@@ -1,19 +1,46 @@
+#ifndef ESPERATTO_IMAGE
+#define ESPERATTO_IMAGE
 #include "../Types.h"
+#include <iostream>
+#include <map>
 #include <string>
 using namespace std;
 
 namespace Esperatto {
-	class Image {
+	struct imageData {
 		Bitmap internal;
+		string path;
+		unsigned int referenceCount = 0;
+	};
+	static map<string, imageData *> loadedMap;
+	class Image {
+	  protected:
+		imageData *data;
 
 	  public:
 		Image(string path) {
-			internal = al_load_bitmap(path.c_str());
-			al_lock_bitmap(internal, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_READONLY);
+			try {
+				data = loadedMap.at(path);
+				data->referenceCount++;
+			} catch (out_of_range e) {
+				data = new imageData();
+				data->internal = al_load_bitmap(path.c_str());
+				data->referenceCount = 1;
+				al_lock_bitmap(data->internal, ALLEGRO_PIXEL_FORMAT_ANY,
+				               ALLEGRO_LOCK_READONLY);
+				loadedMap.insert_or_assign(path, data);
+			}
 		}
-		Bitmap getBitmap(){
-			return internal;
+		Bitmap getBitmap() { return data->internal; }
+		~Image() {
+			data->referenceCount--;
+			if (data->referenceCount == 0) {
+				al_destroy_bitmap(data->internal);
+				loadedMap.erase(data->path);
+				delete data;
+			}
 		}
-		~Image() { al_destroy_bitmap(internal); }
 	};
 } // namespace Esperatto
+
+#endif

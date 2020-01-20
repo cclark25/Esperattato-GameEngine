@@ -2,6 +2,7 @@
 // #include "./ThreadPool/Process.h"
 #include "Camera/Camera.h"
 #include "Image/Image.h"
+#include "Animation/Animation.h"
 #include "Node/Node.h"
 #include "Process/Process.h"
 #include "Screen/Screen.h"
@@ -32,15 +33,15 @@ int main(int argc, char **args) {
 	ThreadWork w;
 	srand(time(NULL));
 	for (int i = 0; i < 20; i++) {
-		Node newNode(new Image("Test_Files/TestSprite2.png"));
-		newNode.setPositionInParent(40, 40);
+		Node newNode(new Animation("./Test_Files/Down.png", 3, 1, 6));
+		newNode.setPositionInParent(128, 112);
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);
 		root.addChild(newNode);
-		int random = rand();
+		int random = rand(), random2 = rand();
 
-		Process p([newNode, random](double passedTime, ThreadWorker worker) {
-			const double pixelPerSecond = 100 * ((random % 5) / 2.0);
+		Process p([newNode, random, random2](double passedTime, ThreadWorker worker) {
+			const double pixelPerSecond = 100 * ((random2 % 5) / 2.0);
 			Node n(newNode);
 
 			n.move(sin(random) * passedTime * pixelPerSecond,
