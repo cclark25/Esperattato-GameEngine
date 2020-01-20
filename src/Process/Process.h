@@ -23,7 +23,7 @@ namespace Esperatto {
 		Process(const Process &source);
 		~Process();
 
-		double Execute(ThreadWorker worker);
+		double Execute(ThreadWorker &worker);
 
 		double get_last_runtime();
 

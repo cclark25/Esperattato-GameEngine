@@ -26,7 +26,7 @@ namespace Esperatto {
 		}
 	}
 
-	double Process::Execute(ThreadWorker worker) {
+	double Process::Execute(ThreadWorker &worker) {
 		data->call_counts++;
 		data->running = true;
 		data->before_timestamp = al_get_time();
