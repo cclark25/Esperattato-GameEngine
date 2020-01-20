@@ -29,7 +29,7 @@ int main(int argc, char **args) {
 
 	Esperatto::Screen d(256, 224, 360);
 	Node last = root;
-	for (int i = 0; i < 200; i++) {
+	for (int i = 0; i < 2; i++) {
 		Node newNode(new Image("Test_Files/TestSprite2.png"));
 		newNode.setPositionInParent(40, 40);
 		newNode.setZIndexInParent(0.01);
@@ -59,13 +59,13 @@ int main(int argc, char **args) {
 		cam.drawToScreen(root);
 		// last.move(-2, 0);
 		if (j < i / 4) {
-			// cam.move(1, 0);
+			cam.move(1, 0);
 		} else if (j < i / 2) {
-			// cam.rotate(3.14159 / (i));
+			cam.rotate(3.14159 / (i));
 		} else if (j < 3 * i / 4) {
-			// cam.zoomIn(0.01);
+			cam.zoomIn(0.01);
 		} else {
-			// cam.zoomIn(-0.01);
+			cam.zoomIn(-0.01);
 		}
 	}
 	double total = chrono::duration_cast<chrono::duration<double>>(

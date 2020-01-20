@@ -9,6 +9,9 @@ namespace Esperatto {
 		this->data->screen = const_cast<Screen *>(&screen);
 		this->setCenterOfRotation(this->data->width / 2.0,
 		                          this->data->height / 2.0);
+		al_set_new_bitmap_flags(ALLEGRO_NO_PRESERVE_TEXTURE);
+		this->data->canvas =
+		    al_create_bitmap(this->data->width, this->data->height);
 	}
 
 	Camera::Camera(const Camera &source) {

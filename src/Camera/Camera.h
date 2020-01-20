@@ -17,7 +17,7 @@ namespace Esperatto {
 			int height = 224;
 			bool drawAnchors = false;
 			unsigned int referenceCount = 0;
-			Bitmap canvas = al_create_bitmap(width, height);
+			Bitmap canvas;
 			Screen *screen;
 		} * data;
 
