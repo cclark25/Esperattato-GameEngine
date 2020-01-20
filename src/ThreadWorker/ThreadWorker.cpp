@@ -37,7 +37,7 @@ namespace Esperatto {
 		static mutex m;
 		data->reference_count--;
 		if (data->reference_count == 0) {
-			if(!m.try_lock()){
+			if (!m.try_lock()) {
 				return;
 			}
 			if (data->inner_thread != nullptr) {

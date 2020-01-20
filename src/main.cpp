@@ -29,23 +29,31 @@ int main(int argc, char **args) {
 
 	Esperatto::Screen d(256, 224, 360);
 	Node last = root;
-	for (int i = 0; i < 2; i++) {
+	ThreadWork w;
+	srand(time(NULL));
+	for (int i = 0; i < 20; i++) {
 		Node newNode(new Image("Test_Files/TestSprite2.png"));
 		newNode.setPositionInParent(40, 40);
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);
-		last.addChild(newNode);
+		root.addChild(newNode);
+		int random = rand();
+
+		Process p([newNode, random](double passedTime, ThreadWorker worker) {
+			const double pixelPerSecond = 100 * ((random % 5) / 2.0);
+			Node n(newNode);
+
+			n.move(sin(random) * passedTime * pixelPerSecond,
+			       cos(random) * passedTime * pixelPerSecond);
+
+			return;
+		});
+		w.second.push(p);
+
 		last = newNode;
 	}
+	cout << "Size: " << w.second.size() << endl;
 
-	Process p([&last](double passedTime, ThreadWorker worker) {
-		static const double pixelPerSecond = 100;
-		last.move(passedTime * pixelPerSecond, 0);
-		return;
-	});
-
-	ThreadWork w;
-	w.second.push(p);
 	ThreadWorker worker(&w);
 	worker.take_off_standby();
 
