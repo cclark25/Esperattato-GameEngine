@@ -5,7 +5,7 @@ CXXFLAGS= -std=c++17
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
-./BUILD/Esperattato.o: $(OUT_DIR)/Animation.o $(OUT_DIR)/Camera.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Process.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Node.o
+./BUILD/Esperattato.o: $(OUT_DIR)/Animation.o $(OUT_DIR)/Camera.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Process.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Node.o $(OUT_DIR)/Keyboard.o
 	g++ $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives
 
 # $(DEPENDENCIES):
@@ -34,6 +34,9 @@ $(OUT_DIR)/Process.o: ./src/Process/Process.cpp ./src/Process/Process.h
 
 $(OUT_DIR)/ThreadWorker.o: ./src/ThreadWorker/ThreadWorker.cpp ./src/ThreadWorker/ThreadWorker.h
 	$(CXX) $(CXXFLAGS)  -c ./src/ThreadWorker/ThreadWorker.cpp -fPIC -o "$(OUT_DIR)/ThreadWorker.o" 
+
+$(OUT_DIR)/Keyboard.o: ./src/Keyboard/Keyboard.cpp ./src/Keyboard/Keyboard.h
+	$(CXX) $(CXXFLAGS)  -c ./src/Keyboard/Keyboard.cpp -fPIC -o "$(OUT_DIR)/Keyboard.o"
 
 # $(OUT_DIR)/Transform.o: ./src/Transform/Transform.cpp ./src/Transform/Transform.h
 # 	g++ -c ./src/Transform/Transform.cpp -fPIC -o "$(OUT_DIR)/Transform.o";

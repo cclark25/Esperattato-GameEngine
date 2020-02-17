@@ -1,8 +1,9 @@
 // #include "./ThreadPool/ThreadWorker.h"
 // #include "./ThreadPool/Process.h"
+#include "Animation/Animation.h"
 #include "Camera/Camera.h"
 #include "Image/Image.h"
-#include "Animation/Animation.h"
+#include "Keyboard/Keyboard.h"
 #include "Node/Node.h"
 #include "Process/Process.h"
 #include "Screen/Screen.h"
@@ -19,9 +20,24 @@
 using namespace Esperatto;
 
 int main(int argc, char **args) {
-	al_init();
 	al_init_image_addon();
 	al_init_primitives_addon();
+
+	Keyboard::subscribe(
+	    Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_H, 0,
+	    [](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+			cout << "'H' button pressed down." << endl;
+	    });
+	Keyboard::subscribe(
+	    Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_H, 0,
+	    [](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+			cout << "'H' button pressed down, but second function." << endl;
+	    });
+	Keyboard::subscribe(
+	    Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_H, 0,
+	    [](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+			cout << "'H' button released." << endl;
+	    });
 
 	Node root = Node(new char(1));
 
@@ -40,15 +56,16 @@ int main(int argc, char **args) {
 		root.addChild(newNode);
 		int random = rand(), random2 = rand();
 
-		Process p([newNode, random, random2](double passedTime, ThreadWorker worker) {
-			const double pixelPerSecond = 100 * ((random2 % 5) / 2.0);
-			Node n(newNode);
+		Process p(
+		    [newNode, random, random2](double passedTime, ThreadWorker worker) {
+			    const double pixelPerSecond = 100 * ((random2 % 5) / 2.0);
+			    Node n(newNode);
 
-			n.move(sin(random) * passedTime * pixelPerSecond,
-			       cos(random) * passedTime * pixelPerSecond);
+			    n.move(sin(random) * passedTime * pixelPerSecond,
+			           cos(random) * passedTime * pixelPerSecond);
 
-			return;
-		});
+			    return;
+		    });
 		w.second.push(p);
 
 		last = newNode;
