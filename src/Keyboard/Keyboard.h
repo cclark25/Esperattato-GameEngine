@@ -7,6 +7,7 @@
 #include <map>
 #include <thread>
 #include <vector>
+#include <memory>
 
 using namespace std;
 namespace Esperatto {
@@ -18,11 +19,6 @@ namespace Esperatto {
 		};
 
 	  private:
-		static ALLEGRO_EVENT_QUEUE *keyboardQueue;
-		static thread *eventManager;
-		static unsigned int referenceCount;
-		static bool shouldEnd;
-
 		typedef vector<function<void(KEY_EVENTS e, unsigned int keycode,
 		                             unsigned int keymodFlags)>>
 		    callbackList;
@@ -33,12 +29,24 @@ namespace Esperatto {
 
 		typedef map<unsigned int, flagList *> keycodeList;
 
-		static keycodeList callbacks;
+	  	struct foreign_data {
+			ALLEGRO_EVENT_QUEUE* keyboardQueue;
+			thread* eventManager;
+			unsigned int referenceCount;
+			keycodeList callbacks;
+			bool shouldEnd = false;
+		};
 
-		static void cycleEvents();
+		shared_ptr<foreign_data> data;
+
+		void cycleEvents();
 
 	  public:
-		static void subscribe(KEY_EVENTS e, unsigned int keycode,
+		Keyboard();
+		Keyboard(const Keyboard& original);
+		~Keyboard();
+
+		void subscribe(KEY_EVENTS e, unsigned int keycode,
 		                      unsigned int keymodFlags,
 		                      function<void(KEY_EVENTS e, unsigned int keycode,
 		                                    unsigned int keymodFlags)>

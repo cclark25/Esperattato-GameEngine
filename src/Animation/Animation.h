@@ -2,6 +2,8 @@
 #define ESPERATTO_ANIMATION
 #include "../Image/Image.h"
 #include <vector>
+#include <mutex>
+#include <memory>
 
 namespace Esperatto {
 	class Animation : public Image {
@@ -10,7 +12,8 @@ namespace Esperatto {
 			vector<Bitmap> frameList;
 			Bitmap baseImage;
 			ALLEGRO_TIMER *timer = nullptr;
-		} * animData;
+		};
+		std::shared_ptr<animationData> animData;
 
 	  public:
 		// Use this constructor when constructing a new Animation from a sprite

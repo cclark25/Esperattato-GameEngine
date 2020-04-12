@@ -2,6 +2,7 @@
 #define ESPERATTO_CAMERA
 #include "../Node/Node.h"
 #include "../Screen/Screen.h"
+#include <memory>
 
 namespace Esperatto {
 	class Camera {
@@ -19,7 +20,8 @@ namespace Esperatto {
 			unsigned int referenceCount = 0;
 			Bitmap canvas;
 			Screen *screen;
-		} * data;
+		};
+		std::shared_ptr<cameraData> data;
 
 	  public:
 		Camera(const Screen &screen);

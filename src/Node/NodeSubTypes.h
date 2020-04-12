@@ -3,19 +3,20 @@
 
 #include <map>
 #include <utility>
+#include <memory>
 using namespace std;
 
 namespace Esperatto {
 	class NodeSubtype {
-		void (*dataDeleter)(void *);
-		void *data;
+		void (*dataDeleter)(shared_ptr<void>);
+		shared_ptr<void> data;
 		size_t type;
 
 	  private:
-	  	NodeSubtype(void (*dataDeleter)(void *), void* data, size_t type);
+	  	NodeSubtype(void (*dataDeleter)(shared_ptr<void>), shared_ptr<void> data, size_t type);
 		~NodeSubtype();
 
-		void* getData(){
+		shared_ptr<void> getData(){
 			return data;
 		}
 

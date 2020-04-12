@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <memory>
 using namespace std;
 
 namespace Esperatto {
@@ -12,10 +13,10 @@ namespace Esperatto {
 		string path;
 		unsigned int referenceCount = 0;
 	};
-	static map<string, imageData *> loadedMap;
+	static map<string, shared_ptr<imageData> > loadedMap;
 	class Image {
 	  protected:
-		imageData *data;
+		shared_ptr<imageData> data;
 
 	  public:
 		Image(string path) {
@@ -23,7 +24,7 @@ namespace Esperatto {
 				data = loadedMap.at(path);
 				data->referenceCount++;
 			} catch (out_of_range e) {
-				data = new imageData();
+				data = shared_ptr<imageData>(new imageData());
 				data->internal = al_load_bitmap(path.c_str());
 				data->referenceCount = 1;
 				al_lock_bitmap(data->internal, ALLEGRO_PIXEL_FORMAT_ANY,
@@ -37,7 +38,7 @@ namespace Esperatto {
 			if (data->referenceCount == 0) {
 				al_destroy_bitmap(data->internal);
 				loadedMap.erase(data->path);
-				delete data;
+				// delete data;
 			}
 		}
 	};

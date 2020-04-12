@@ -8,7 +8,7 @@ using namespace std;
 namespace Esperatto {
 
 	Process::Process(std::function<void(double, ThreadWorker)> fun) {
-		data = new foreign_data();
+		data = make_shared<foreign_data>();
 		data->last_timestamp = al_get_time();
 		data->func_loop = fun;
 		data->referenceCount = 1;
@@ -22,7 +22,7 @@ namespace Esperatto {
 	Process::~Process(){
 		data->referenceCount--;
 		if(data->referenceCount == 0){
-			delete data;
+			// delete data;
 		}
 	}
 

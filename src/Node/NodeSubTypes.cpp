@@ -1,7 +1,7 @@
 #include "NodeSubTypes.h"
 
 namespace Esperatto {
-	NodeSubtype::NodeSubtype(void (*dataDeleter)(void *), void *data,
+	NodeSubtype::NodeSubtype(void (*dataDeleter)(shared_ptr<void>), shared_ptr<void>data,
 	                         size_t type) {
 		this->dataDeleter = dataDeleter;
 		this->data = data;

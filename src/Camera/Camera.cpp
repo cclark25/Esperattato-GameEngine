@@ -5,7 +5,7 @@
 
 namespace Esperatto {
 	Camera::Camera(const Screen &screen) {
-		this->data = new cameraData();
+		this->data = shared_ptr<cameraData>(new cameraData());
 		this->data->referenceCount = 1;
 		this->data->screen = const_cast<Screen *>(&screen);
 		this->setCenterOfRotation(this->data->width / 2.0,
@@ -24,7 +24,7 @@ namespace Esperatto {
 		this->data->referenceCount--;
 		if (this->data->referenceCount == 0) {
 			al_destroy_bitmap(this->data->canvas);
-			delete this->data;
+			// delete this->data;
 		}
 	}
 
@@ -48,10 +48,10 @@ namespace Esperatto {
 				al_use_transform(&node.transformation);
 				Bitmap layer = nullptr;
 				if (node.node.getSubType() == typeid(Image).hash_code()) {
-					layer = (*(Image *)node.node.getDataPtr()).getBitmap();
+					layer = (*(Image *)node.node.getDataPtr().get()).getBitmap();
 				} else if (node.node.getSubType() ==
 				           typeid(Animation).hash_code()) {
-					layer = (*(Animation *)node.node.getDataPtr()).getBitmap();
+					layer = (*(Animation *)node.node.getDataPtr().get()).getBitmap();
 				} else {
 					// throw bad_exception();
 				}

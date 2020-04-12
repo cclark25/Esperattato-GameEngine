@@ -5,7 +5,7 @@ namespace Esperatto {
 	Animation::Animation(string path, unsigned int columnCount,
 	                     unsigned int rowCount, double framerate)
 	    : Image(path) {
-		animData = new animationData();
+		animData = make_shared<animationData>();
 		animData->referenceCount = 1;
 		animData->baseImage = data->internal;
 		const unsigned int colWidth =
@@ -33,15 +33,28 @@ namespace Esperatto {
 	}
 
 	Animation::~Animation() {
+		static mutex m;
+		m.lock();
 		animData->referenceCount--;
 		if (animData->referenceCount == 0) {
-			for (Bitmap b : animData->frameList) {
-				al_destroy_bitmap(b);
+			cout << "animDate pointer: " << typeid(animData).name() << endl;
+			cout << "frameList: " << animData->frameList.size() << endl;
+		
+			
+			for (auto it = animData->frameList.begin(); it != animData->frameList.end() ; it++) {
+				al_destroy_bitmap(*it);
+				(*it) = nullptr;
 			}
+			animData->frameList.clear();
+			cout << "After clear: " << animData->frameList.size() << endl;
+
 			data->internal = animData->baseImage;
 			al_destroy_timer(animData->timer);
-			delete animData;
+			animData->timer = nullptr;
+			// delete animData;
+			animData = nullptr;
 		}
+		m.unlock();
 	}
 
 	unsigned int Animation::getFrame() {

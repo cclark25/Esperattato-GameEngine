@@ -5,14 +5,15 @@ using namespace std;
 
 namespace Esperatto {
 
-	Node::Node(const Node &original) : data(original.data) {
+	Node::Node(const Node &original){ //: data(original.data) {
+		data = original.data;
 		data->referenceCount++;
 	}
 
 	Node::~Node() {
 		this->data->referenceCount--;
 		if (this->data->referenceCount == 0) {
-			delete this->data;
+			// delete this->data;
 		}
 	}
 
@@ -64,7 +65,7 @@ namespace Esperatto {
 	void Node::removeChild(Node child) { this->data->children.erase(child); }
 
 	Coordinates Node::getGlobalPosition() {
-		foreign_data *level = this->data;
+		shared_ptr<foreign_data> level = this->data;
 		Coordinates result = {0, 0};
 
 		while (true) {
@@ -80,7 +81,7 @@ namespace Esperatto {
 	}
 
 	double Node::getGlobalRotation() {
-		foreign_data *level = this->data;
+		shared_ptr<foreign_data> level = this->data;
 		double result = 0;
 
 		while (true) {
@@ -95,7 +96,7 @@ namespace Esperatto {
 	}
 
 	double Node::getGlobalXScale() {
-		foreign_data *level = this->data;
+		shared_ptr<foreign_data> level = this->data;
 		double result = 0;
 
 		while (true) {
@@ -110,7 +111,7 @@ namespace Esperatto {
 	}
 
 	double Node::getGlobalYScale() {
-		foreign_data *level = this->data;
+		shared_ptr<foreign_data> level = this->data;
 		double result = 0;
 
 		while (true) {
@@ -125,7 +126,7 @@ namespace Esperatto {
 	}
 
 	double Node::getGlobalZIndex() {
-		foreign_data *level = this->data;
+		shared_ptr<foreign_data> level = this->data;
 		double result = 0;
 
 		while (true) {
@@ -139,8 +140,8 @@ namespace Esperatto {
 		return result;
 	}
 
-	void *Node::getParentPointer() { return this->data->parent; }
-	void *Node::getSelfPointer() { return this->data; }
+	void *Node::getParentPointer() { return this->data->parent.get(); }
+	void *Node::getSelfPointer() { return this->data.get(); }
 
 	double Node::getZIndexInParent() { return this->data->zIndex; }
 	void Node::setZIndexInParent(double newZ) { this->data->zIndex = newZ; }
@@ -220,7 +221,7 @@ namespace Esperatto {
 
 	size_t Node::getSubType() { return this->data->subdata.getType(); }
 
-	void *Node::getDataPtr(){
+	shared_ptr<void> Node::getDataPtr(){
 		return this->data->subdata.getData();
 	}
 

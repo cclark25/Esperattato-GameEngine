@@ -2,6 +2,8 @@
 #define ESPERATTATO_PROCESS_DEF
 
 #include <functional>
+#include <memory>
+using namespace std;
 
 namespace Esperatto {
 	class ThreadWorker;
@@ -16,7 +18,8 @@ namespace Esperatto {
 			double before_timestamp = 0;
 			bool running = false;
 			unsigned int referenceCount = 0;
-		} * data;
+		};
+		shared_ptr<foreign_data> data;
 
 	  public:
 		Process(std::function<void(double, ThreadWorker)> fun);

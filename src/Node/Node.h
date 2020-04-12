@@ -7,6 +7,7 @@
 #include <iostream>
 #include <set>
 #include <utility>
+#include <memory>
 using namespace std;
 
 namespace Esperatto {
@@ -33,20 +34,25 @@ namespace Esperatto {
 			unsigned int referenceCount = 0;
 			NodeSubtype subdata;
 			multiset<Node> children;
-			foreign_data *parent = nullptr;
+			shared_ptr<foreign_data> parent ;
 
 			template <typename T>
-			foreign_data(T *data)
-			    : subdata([](void *toDelete) { delete (T *)toDelete; }, data,
-			              typeid(T).hash_code()) {}
-		} * data;
+			foreign_data(shared_ptr<T> data)
+			    : subdata([](shared_ptr<void> toDelete) { 
+					// delete (shared_ptr<T>)(toDelete); 
+				}, 
+					data,
+					typeid(T).hash_code()
+					) {}
+		};
+		shared_ptr<foreign_data> data;
 
 		Transform getTransform();
 
 	  public:
 		template <class T>
-		Node(T *d) {
-			this->data = new foreign_data(d);
+		Node(shared_ptr<T> d) {
+			this->data = make_shared<foreign_data>(d);
 			this->data->referenceCount = 1;
 		}
 
@@ -57,7 +63,7 @@ namespace Esperatto {
 		void rotate(double radians);
 
 		size_t getSubType();
-		void* getDataPtr();
+		shared_ptr<void> getDataPtr();
 
 		void setPositionInParent(double x, double y);
 		Coordinates getPositionInParent();

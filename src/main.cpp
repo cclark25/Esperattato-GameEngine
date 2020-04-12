@@ -1,5 +1,4 @@
-// #include "./ThreadPool/ThreadWorker.h"
-// #include "./ThreadPool/Process.h"
+
 #include "Animation/Animation.h"
 #include "Camera/Camera.h"
 #include "Image/Image.h"
@@ -7,7 +6,9 @@
 #include "Node/Node.h"
 #include "Process/Process.h"
 #include "Screen/Screen.h"
+#include "./Types.h"
 #include "ThreadWorker/ThreadWorker.h"
+#include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 #include <chrono>
@@ -16,40 +17,45 @@
 #include <iostream>
 #include <map>
 #include <unistd.h>
+#include <memory>
 
 using namespace Esperatto;
 
 int main(int argc, char **args) {
+	al_init();
+	
 	al_init_image_addon();
 	al_init_primitives_addon();
 
-	Keyboard::subscribe(
+	Keyboard keyboard;
+
+	keyboard.subscribe(
 	    Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_H, 0,
 	    [](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			cout << "'H' button pressed down." << endl;
+			std::cout << "'H' button pressed down." << endl;
 	    });
-	Keyboard::subscribe(
+	keyboard.subscribe(
 	    Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_H, 0,
 	    [](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			cout << "'H' button pressed down, but second function." << endl;
+			std::cout << "'H' button pressed down, but second function." << endl;
 	    });
-	Keyboard::subscribe(
+	keyboard.subscribe(
 	    Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_H, 0,
 	    [](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			cout << "'H' button released." << endl;
+			std::cout << "'H' button released." << endl;
 	    });
 
-	Node root = Node(new char(1));
+	Node root = Node(std::shared_ptr<char>(new char(1)));
 
 	root.setPositionInParent(0, 0);
 	root.setCenterOfRotation(128, 112);
 
 	Esperatto::Screen d(256, 224, 360);
 	Node last = root;
-	ThreadWork w;
-	srand(time(NULL));
+	shared_ptr<ThreadWork> w = shared_ptr<ThreadWork>(new ThreadWork());
+	std::srand(time(NULL));
 	for (int i = 0; i < 20; i++) {
-		Node newNode(new Animation("./Test_Files/Down.png", 3, 1, 6));
+		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Down.png", 1, 1, 1)));
 		newNode.setPositionInParent(128, 112);
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);
@@ -66,13 +72,13 @@ int main(int argc, char **args) {
 
 			    return;
 		    });
-		w.second.push(p);
+		w->second.push(p);
 
 		last = newNode;
 	}
-	cout << "Size: " << w.second.size() << endl;
+	std::cout << "Size: " << w->second.size() << endl;
 
-	ThreadWorker worker(&w);
+	ThreadWorker worker(w);
 	worker.take_off_standby();
 
 	const int i = 256;
@@ -98,6 +104,7 @@ int main(int argc, char **args) {
 	                   chrono::high_resolution_clock::now() - before)
 	                   .count();
 
-	cout << "Average Framerate: " << i / total << endl;
+	std::cout << "Average Framerate: " << i / total << endl;
+	
 	return 0;
 }
