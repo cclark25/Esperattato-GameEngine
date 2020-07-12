@@ -1,12 +1,13 @@
 CXX= g++
 CXXFLAGS= -std=c++17 -Wall -pedantic -ggdb
+CFLAGS=  -Wall -pedantic -ggdb
 # RM= rm -vf
 
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
-./BUILD/Esperattato.o: $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o
-	g++ $(CXXFLAGS) $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives
+./BUILD/Esperattato.o: $(OUT_DIR)/libxm $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o
+	g++ $(CXXFLAGS) $(OUT_DIR)/*.o `ls $(OUT_DIR)/**/*.o && echo "$(OUT_DIR)/**/*.o"` -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives
 
 # $(DEPENDENCIES):
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
@@ -37,3 +38,13 @@ $(OUT_DIR)/Process.o: ./src/Process/Process.cpp ./src/Process/Process.h
 
 $(OUT_DIR)/Keyboard.o: ./src/Keyboard/Keyboard.cpp ./src/Keyboard/Keyboard.h
 	$(CXX) $(CXXFLAGS)  -c ./src/Keyboard/Keyboard.cpp -fPIC -o "$(OUT_DIR)/Keyboard.o"
+
+$(OUT_DIR)/libxm: ./Dependencies/libxm/src/*
+	[ -e $(OUT_DIR)/libxm ] || mkdir $(OUT_DIR)/libxm
+
+	cd $(OUT_DIR)/libxm && \
+	gcc $(CFLAGS) -c ../../../Dependencies/libxm/src/*.c \
+		-I../../../Dependencies/libxm/include -I../../../Dependencies/libxm/src -I/usr/include \
+		-D XM_DEFENSIVE=true -D XM_LIBXMIZE_DELTA_SAMPLES=true -D XM_LINEAR_INTERPOLATION=true -D XM_DEBUG
+
+

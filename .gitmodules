@@ -4,3 +4,6 @@
 [submodule "Dependencies/AllegroCPPWrappers"]
 	path = Dependencies/AllegroCPPWrappers
 	url = https://github.com/cclark25/AllegroCPPWrappers.git
+[submodule "Dependencies/libxm"]
+	path = Dependencies/libxm
+	url = https://github.com/Artefact2/libxm.git
