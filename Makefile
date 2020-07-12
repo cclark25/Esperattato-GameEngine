@@ -1,13 +1,15 @@
 CXX= g++
 CXXFLAGS= -std=c++17 -Wall -pedantic -ggdb
-CFLAGS=  -Wall -pedantic -ggdb
+CFLAGS=  -Wall -pedantic -ggdb -fPIC
+
+libxmFLAGS= -I./Dependencies/libxm/src -I./Dependencies/libxm/include -I/usr/include
 # RM= rm -vf
 
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
 ./BUILD/Esperattato.o: $(OUT_DIR)/libxm $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o
-	g++ $(CXXFLAGS) $(OUT_DIR)/*.o `ls $(OUT_DIR)/**/*.o && echo "$(OUT_DIR)/**/*.o"` -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives
+	g++ $(CXXFLAGS) $(libxmFLAGS) $(OUT_DIR)/*.o $(OUT_DIR)/**/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -fPIC
 
 # $(DEPENDENCIES):
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
