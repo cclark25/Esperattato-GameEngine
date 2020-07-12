@@ -8,17 +8,17 @@ libxmFLAGS= -I./Dependencies/libxm/src -I./Dependencies/libxm/include -I/usr/inc
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
-./BUILD/Esperattato.o: $(OUT_DIR)/libxm $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o
-	g++ $(CXXFLAGS) $(libxmFLAGS) $(OUT_DIR)/*.o $(OUT_DIR)/**/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -fPIC
+./BUILD/Esperattato.o: $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o
+	g++ $(CXXFLAGS) $(libxmFLAGS) $(OUT_DIR)/libxm/*.o $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -fPIC
 
 # $(DEPENDENCIES):
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
 
 test: ./BUILD/Esperattato.o
-	$(CXX) $(CXXFLAGS) src/main.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/main.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
 $(OUT_DIR)/Animation.o: ./src/Animation/Animation.h ./src/Animation/Animation.cpp ./src/Image/Image.h
-	$(CXX) $(CXXFLAGS)  -c ./src/Animation/Animation.cpp -fPIC -o "$(OUT_DIR)/Animation.o"
+	$(CXX) $(CXXFLAGS) -c ./src/Animation/Animation.cpp -fPIC -o "$(OUT_DIR)/Animation.o"
 
 $(OUT_DIR)/Screen.o:  ./src/Screen/Screen.cpp ./src/Screen/Screen.h
 	$(CXX) $(CXXFLAGS)  -c ./src/Screen/Screen.cpp -fPIC -o "$(OUT_DIR)/Screen.o"
@@ -41,7 +41,10 @@ $(OUT_DIR)/Process.o: ./src/Process/Process.cpp ./src/Process/Process.h
 $(OUT_DIR)/Keyboard.o: ./src/Keyboard/Keyboard.cpp ./src/Keyboard/Keyboard.h
 	$(CXX) $(CXXFLAGS)  -c ./src/Keyboard/Keyboard.cpp -fPIC -o "$(OUT_DIR)/Keyboard.o"
 
-$(OUT_DIR)/libxm: ./Dependencies/libxm/src/*
+$(OUT_DIR)/XM.o: ./src/XM/XM.cpp $(OUT_DIR)/libxm
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) -c ./src/XM/XM.cpp $(OUT_DIR)/libxm -fPIC -o "$(OUT_DIR)/XM.o" 
+
+$(OUT_DIR)/libxm: ./Dependencies/libxm/src/* 
 	[ -e $(OUT_DIR)/libxm ] || mkdir $(OUT_DIR)/libxm
 
 	cd $(OUT_DIR)/libxm && \

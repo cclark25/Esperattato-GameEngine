@@ -11,6 +11,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
 #include <chrono>
 #include <cmath>
 #include <functional>
@@ -18,14 +19,27 @@
 #include <map>
 #include <unistd.h>
 #include <memory>
+#include "./XM/XM.h"
 
 using namespace Esperatto;
+
+void playSong(){
+	auto xm = XM::create_context_from_file(48000, "./Test_Files/kam_-_mario_brothers.xm");
+	auto sample = XM::copyToBuffer(xm);
+	bool played = al_play_sample(sample, 1, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+	cout << "Sample " << (played ? "" : "not ") << "played." << endl;
+}
 
 int main(int argc, char **args) {
 	al_init();
 	
 	al_init_image_addon();
 	al_init_primitives_addon();
+	al_install_audio();
+
+	al_reserve_samples(1);
+	
+	thread(playSong).join();
 
 	Keyboard keyboard;
 
@@ -105,6 +119,10 @@ int main(int argc, char **args) {
 	                   .count();
 
 	std::cout << "Average Framerate: " << i / total << endl;
-	
+
+	usleep(10000000);
+
+	al_uninstall_audio();
+
 	return 0;
 }
