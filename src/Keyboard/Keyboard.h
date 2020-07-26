@@ -39,13 +39,14 @@ namespace Esperatto {
 
 		shared_ptr<foreign_data> data;
 
-		void cycleEvents();
 
 	  public:
 		Keyboard();
 		Keyboard(const Keyboard& original);
 		~Keyboard();
 
+		void cycleEvents();
+		
 		void subscribe(KEY_EVENTS e, unsigned int keycode,
 		                      unsigned int keymodFlags,
 		                      function<void(KEY_EVENTS e, unsigned int keycode,

@@ -3,6 +3,7 @@
 #include "../Node/Node.h"
 #include "../Screen/Screen.h"
 #include <memory>
+#include <thread>
 
 namespace Esperatto {
 	class Camera {

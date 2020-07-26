@@ -13,6 +13,7 @@ namespace Esperatto {
 		al_set_new_bitmap_flags(ALLEGRO_NO_PRESERVE_TEXTURE);
 		this->data->canvas =
 		    al_create_bitmap(this->data->width, this->data->height);
+		
 	}
 
 	Camera::Camera(const Camera &source) {

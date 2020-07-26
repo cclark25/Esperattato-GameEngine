@@ -4,18 +4,26 @@ using namespace std;
 
 namespace Esperatto
 {
-	Keyboard::Keyboard(){
-		data = shared_ptr<foreign_data>(new foreign_data());
-	}
-	Keyboard::Keyboard(const Keyboard& original){
-		data = original.data;
-	}
+Keyboard::Keyboard()
+{
+	data = shared_ptr<foreign_data>(new foreign_data());
+	data->eventManager = new thread([this]() {
+		cycleEvents();
+	});
+}
+Keyboard::Keyboard(const Keyboard &original)
+{
+	data = original.data;
+}
 
-	Keyboard::~Keyboard(){
-		if(data.use_count() == 1){
-			data->shouldEnd = true;
-		}
+Keyboard::~Keyboard()
+{
+	if (data.use_count() == 1)
+	{
+		data->shouldEnd = true;
+		data->eventManager->join();
 	}
+}
 
 void Keyboard::cycleEvents()
 {
@@ -36,7 +44,8 @@ void Keyboard::cycleEvents()
 	{
 		// cout << "cycleEvents called.\n";
 		bool eventOccurred = al_wait_for_event_timed(data->keyboardQueue, &currentEvent, 5);
-		if(!eventOccurred){
+		if (!eventOccurred)
+		{
 			continue;
 		}
 		// cout << "Event occurred.\n";
