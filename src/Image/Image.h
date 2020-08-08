@@ -27,8 +27,11 @@ namespace Esperatto {
 				data = shared_ptr<imageData>(new imageData());
 				data->internal = al_load_bitmap(path.c_str());
 				data->referenceCount = 1;
-				al_lock_bitmap(data->internal, ALLEGRO_PIXEL_FORMAT_ANY,
-				               ALLEGRO_LOCK_READONLY);
+				/*
+					For some reason, locking the bitmap makes it slower.
+				*/
+				// al_lock_bitmap(data->internal, ALLEGRO_PIXEL_FORMAT_ANY,
+				//                ALLEGRO_LOCK_READONLY);
 				loadedMap.insert_or_assign(path, data);
 			}
 		}

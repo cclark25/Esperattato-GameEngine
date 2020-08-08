@@ -43,23 +43,13 @@ int main(int argc, char **args)
 
 	// thread(playSong).join();
 
+	bool escapePressed = false;
 	Keyboard keyboard;
-
 	keyboard.subscribe(
-		Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_H, 0,
-		[](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			std::cout << "'H' button pressed down." << endl;
-		});
-	keyboard.subscribe(
-		Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_H, 0,
-		[](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			std::cout << "'H' button pressed down, but second function." << endl;
-		});
-	keyboard.subscribe(
-		Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_H, 0,
-		[](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			std::cout << "'H' button released." << endl;
-		});
+			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
+			[&escapePressed](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				escapePressed = true;
+			});
 
 	Node root = Node(std::shared_ptr<char>(new char(1)));
 
@@ -69,10 +59,10 @@ int main(int argc, char **args)
 	Node last = root;
 	shared_ptr<ThreadWork> w = shared_ptr<ThreadWork>(new ThreadWork());
 	std::srand(time(NULL));
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 60; i++)
 	{
-		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Down.png", 1, 1, 1)));
-		newNode.setPositionInParent(128, 112);
+		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Moma.png", 3, 1, 10)));
+		newNode.setPositionInParent(0 + 32 * (i%8), 0 + 40 * (i / 8));
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);
 		root.addChild(newNode);
@@ -98,45 +88,45 @@ int main(int argc, char **args)
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_W, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y = -1;
+				(*motionVector).y -= 1;
 			});
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_W, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y = 0;
+				(*motionVector).y += 1;
 			});
 
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_S, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y = 1;
+				(*motionVector).y += 1;
 			});
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_S, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y = 0;
+				(*motionVector).y -= 1;
 			});
 		///////
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_D, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x = 1;
+				(*motionVector).x += 1;
 			});
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_D, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x = 0;
+				(*motionVector).x -= 1;
 			});
 
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_A, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x = -1;
+				(*motionVector).x -= 1;
 			});
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_A, 0,
 			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x = 0;
+				(*motionVector).x += 1;
 			});
 
 		last = newNode;
@@ -152,9 +142,10 @@ int main(int argc, char **args)
 	d.setPixelStretch(7.0 / 6.0, 1);
 	Camera cam(d);
 	auto before = chrono::high_resolution_clock::now();
-	cam.toggleAnchor(false);
+	// cam.toggleAnchor(true);
 
-	for (int j = 0; j < i; j++)
+	// for (int j = 0; j < i; j++)
+	while (!escapePressed)
 	{
 		cam.drawToScreen(root);
 		// last.move(-2, 0);
