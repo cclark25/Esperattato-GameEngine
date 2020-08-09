@@ -157,7 +157,7 @@ namespace Esperatto {
 
 	multiset<SovereignNode> Node::makeNodeSet(Transform &baseTransform) {
 		multiset<SovereignNode> result;
-		Transform thisTransform;
+		static Transform thisTransform;
 		al_identity_transform(&thisTransform);
 		al_translate_transform(
 		    &thisTransform,
@@ -171,9 +171,9 @@ namespace Esperatto {
 
 		al_compose_transform(&thisTransform, &baseTransform);
 		
-		double globalZIndex = this->data->zIndex;
+		static double globalZIndex = this->data->zIndex;
 
-		SovereignNode sov = {sov, thisTransform, *this, globalZIndex};
+		static SovereignNode sov = {sov, thisTransform, *this, globalZIndex};
 		result.insert(sov);
 
 		for (Node child : this->data->children) {
@@ -185,7 +185,7 @@ namespace Esperatto {
 	}
 	multiset<SovereignNode> Node::makeNodeSet(SovereignNode parent) {
 		multiset<SovereignNode> result;
-		Transform thisTransform;
+		static Transform thisTransform;
 		al_identity_transform(&thisTransform);
 		al_translate_transform(
 		    &thisTransform,

@@ -32,7 +32,7 @@ namespace Esperatto {
 	void Camera::drawToScreen(Node rootNode) {
 		al_set_target_bitmap(this->data->canvas);
 		al_clear_to_color(al_map_rgb(128, 128, 128));
-		Transform thisTransform;
+		static Transform thisTransform;
 		al_identity_transform(&thisTransform);
 		al_translate_transform(&thisTransform, -(this->data->width / 2.0),
 		                       -(this->data->height / 2.0));

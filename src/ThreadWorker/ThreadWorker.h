@@ -14,7 +14,20 @@ namespace Esperatto
 
 class Process;
 
-typedef pair<mutex, queue<Process>> ThreadWork;
+
+class ThreadWork {
+	public:
+		mutex innerMutex;
+		unique_lock<mutex> innerLock = unique_lock<mutex>(innerMutex);
+		queue<Process> innerQueue;
+		std::chrono::duration<long double> loopMinimum = 1s / 60.00;
+	
+		condition_variable queueHasData;
+		bool ending = false;
+		ThreadWork();
+		Process* pop();
+		size_t push(Process p);
+};
 
 enum ThreadState
 {
@@ -39,7 +52,7 @@ protected:
 	shared_ptr<foreign_data> data;
 
 public:
-	ThreadWorker(shared_ptr<ThreadWork> processes);
+	ThreadWorker(shared_ptr<ThreadWork> processes, std::chrono::duration<long double> stepDuration = 1s / 60.00);
 
 	ThreadWorker(ThreadWorker const &origin);
 

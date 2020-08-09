@@ -46,10 +46,10 @@ int main(int argc, char **args)
 	bool escapePressed = false;
 	Keyboard keyboard;
 	keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
-			[&escapePressed](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				escapePressed = true;
-			});
+		Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
+		[&escapePressed](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+			escapePressed = true;
+		});
 
 	Node root = Node(std::shared_ptr<char>(new char(1)));
 
@@ -62,7 +62,7 @@ int main(int argc, char **args)
 	for (int i = 0; i < 60; i++)
 	{
 		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Moma.png", 3, 1, 10)));
-		newNode.setPositionInParent(0 + 32 * (i%8), 0 + 40 * (i / 8));
+		newNode.setPositionInParent(0 + 32 * (i % 8), 0 + 40 * (i / 8));
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);
 		root.addChild(newNode);
@@ -75,7 +75,7 @@ int main(int argc, char **args)
 			[newNode, motionVector](double passedTime, ThreadWorker worker) {
 				Node n(newNode);
 				double hyp = sqrt(pow((*motionVector).y, 2) + pow((*motionVector).x, 2));
-				
+
 				double angle = asin((*motionVector).y / hyp);
 				if (hyp > 0)
 				{
@@ -83,7 +83,7 @@ int main(int argc, char **args)
 				}
 				return;
 			});
-		w->second.push(p);
+		w->innerQueue.push(p);
 
 		keyboard.subscribe(
 			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_W, 0,
@@ -131,10 +131,25 @@ int main(int argc, char **args)
 
 		last = newNode;
 	}
-	std::cout << "Size: " << w->second.size() << endl;
 
-	ThreadWorker worker(w);
-	worker.take_off_standby();
+
+	// std::cout << "Size: " << w->second.size() << endl;
+	Process p1(
+		[root](double passedTime, ThreadWorker worker) {
+			// cout << "Here 1" << endl;
+			return;
+		});
+	w->push(p1);
+	Process p2(
+		[root](double passedTime, ThreadWorker worker) {
+			// cout << "Here 2" << endl;
+			return;
+		});
+	w->push(p2);
+	ThreadWorker worker1(w, 1s / 120.00), worker2(w, 1s / 2);
+	worker1.take_off_standby();
+	worker2.take_off_standby();
+
 
 	const int i = 256;
 	Esperatto::Screen d(256, 224, 360);
@@ -148,6 +163,7 @@ int main(int argc, char **args)
 	while (!escapePressed)
 	{
 		cam.drawToScreen(root);
+
 		// last.move(-2, 0);
 		// if (j < i / 4)
 		// {
