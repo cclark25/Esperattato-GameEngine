@@ -1,5 +1,7 @@
 
 #include "Animation/Animation.h"
+#include "PixelCollision/PixelCollision.h"
+#include "PixelCollision/CollisionTree.h"
 #include "Camera/Camera.h"
 #include "Image/Image.h"
 #include "Keyboard/Keyboard.h"
@@ -23,12 +25,25 @@
 
 using namespace Esperatto;
 
-void playSong()
+bool test(CollisionTree &tree, int desiredLevel, int level = 0)
 {
-	auto xm = XM::create_context_from_file(48000, "./Test_Files/kam_-_mario_brothers.xm");
-	auto sample = XM::copyToBuffer(xm);
-	bool played = al_play_sample(sample, 1, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
-	cout << "Sample " << (played ? "" : "not ") << "played." << endl;
+	if (level == desiredLevel)
+	{
+		cout << "At level #" << level << ": x=" << tree.first.x << endl;
+		return true;
+	}
+
+	bool success = false;
+	if (tree.lessThan != nullptr)
+	{
+		success |= test(*tree.lessThan, desiredLevel, level + 1);
+	}
+	if (tree.greaterThanEqualTo != nullptr)
+	{
+		success |= test(*tree.greaterThanEqualTo, desiredLevel, level + 1);
+	}
+
+	return success;
 }
 
 int main(int argc, char **args)
@@ -41,154 +56,17 @@ int main(int argc, char **args)
 
 	al_reserve_samples(1);
 
-	// thread(playSong).join();
+	auto x = PixelCollision("./Test_Files/Moma.png");
+	auto y = CollisionTree({1, 1}, {10, 10}, true);
 
-	bool escapePressed = false;
-	Keyboard keyboard;
-	keyboard.subscribe(
-		Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
-		[&escapePressed](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			escapePressed = true;
-		});
-
-	Node root = Node(std::shared_ptr<char>(new char(1)));
-
-	root.setPositionInParent(0, 0);
-	root.setCenterOfRotation(128, 112);
-
-	Node last = root;
-	shared_ptr<ThreadWork> w = shared_ptr<ThreadWork>(new ThreadWork());
-	std::srand(time(NULL));
-	for (int i = 0; i < 60; i++)
+	for (int i = 2; i <= 100; i++)
 	{
-		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Moma.png", 3, 1, 10)));
-		newNode.setPositionInParent(0 + 32 * (i % 8), 0 + 40 * (i / 8));
-		newNode.setZIndexInParent(0.01);
-		newNode.setCenterOfRotation(0, 0);
-		root.addChild(newNode);
-
-		auto *motionVector = new Coordinates();
-		(*motionVector).x = 0;
-		(*motionVector).y = 0;
-		auto nodeptr = &newNode;
-		Process p(
-			[newNode, motionVector](double passedTime, ThreadWorker worker) {
-				Node n(newNode);
-				double hyp = sqrt(pow((*motionVector).y, 2) + pow((*motionVector).x, 2));
-
-				double angle = asin((*motionVector).y / hyp);
-				if (hyp > 0)
-				{
-					n.move(((*motionVector).x < 0 ? -1 : 1) * 100 * passedTime * cos(angle), 100 * passedTime * sin(angle));
-				}
-				return;
-			});
-		w->innerQueue.push(p);
-
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_W, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y -= 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_W, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y += 1;
-			});
-
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_S, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y += 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_S, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y -= 1;
-			});
-		///////
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_D, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x += 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_D, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x -= 1;
-			});
-
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_A, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x -= 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_A, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x += 1;
-			});
-
-		last = newNode;
+		y.addOne({i, i}, {10 * i, 10 * i});
 	}
 
-
-	// std::cout << "Size: " << w->second.size() << endl;
-	Process p1(
-		[root](double passedTime, ThreadWorker worker) {
-			// cout << "Here 1" << endl;
-			return;
-		});
-	w->push(p1);
-	Process p2(
-		[root](double passedTime, ThreadWorker worker) {
-			// cout << "Here 2" << endl;
-			return;
-		});
-	w->push(p2);
-	ThreadWorker worker1(w, 1s / 120.00), worker2(w, 1s / 2);
-	worker1.take_off_standby();
-	worker2.take_off_standby();
-
-
-	const int i = 256;
-	Esperatto::Screen d(256, 224, 360);
-	d.setFullscreen(true);
-	d.setPixelStretch(7.0 / 6.0, 1);
-	Camera cam(d);
-	auto before = chrono::high_resolution_clock::now();
-	// cam.toggleAnchor(true);
-
-	// for (int j = 0; j < i; j++)
-	while (!escapePressed)
+	for (int i = 0; test(y, i); i++)
 	{
-		cam.drawToScreen(root);
-
-		// last.move(-2, 0);
-		// if (j < i / 4)
-		// {
-		// 	cam.move(1, 0);
-		// }
-		// else if (j < i / 2)
-		// {
-		// 	cam.rotate(3.14159 / (i));
-		// }
-		// else if (j < 3 * i / 4)
-		// {
-		// 	cam.zoomIn(0.01);
-		// }
-		// else
-		// {
-		// 	cam.zoomIn(-0.01);
-		// }
 	}
-	double total = chrono::duration_cast<chrono::duration<double>>(
-					   chrono::high_resolution_clock::now() - before)
-					   .count();
-
-	std::cout << "Average Framerate: " << i / total << endl;
-
-	// usleep(10000000);
 
 	al_uninstall_audio();
 
