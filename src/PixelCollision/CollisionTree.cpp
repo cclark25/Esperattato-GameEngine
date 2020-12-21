@@ -1,17 +1,13 @@
 #include "CollisionTree.h"
 
-namespace Esperatto
-{
-	CollisionTree::CollisionTree(const Coordinates &a, const Coordinates &b, bool onX)
-	{
+namespace Esperatto {
+	CollisionTree::CollisionTree(const Coordinates &a, const Coordinates &b,
+	                             bool onX) {
 		this->onX = onX;
-		if (this->onX)
-		{
+		if (this->onX) {
 			this->first = (a.x <= b.x) ? a : b;
 			this->second = (a.x <= b.x) ? b : a;
-		}
-		else
-		{
+		} else {
 			this->first = (a.y <= b.y) ? a : b;
 			this->first = (a.y <= b.y) ? b : a;
 		}
@@ -20,133 +16,118 @@ namespace Esperatto
 		this->greaterThanEqualTo = nullptr;
 	}
 
-	void CollisionTree::addOne(const Coordinates &a, const Coordinates &b)
-	{
+	void CollisionTree::addOne(const Coordinates &a, const Coordinates &b) {
 		this->collisionCount++;
 		CollisionTree **destination;
-		const Coordinates &first = this->onX ? ((a.x <= b.x) ? a : b) : ((a.y <= b.y) ? a : b);
-		const Coordinates &second = this->onX ? ((a.x <= b.x) ? b : a) : ((a.y <= b.y) ? b : a);
+		const Coordinates &first =
+		    this->onX ? ((a.x <= b.x) ? a : b) : ((a.y <= b.y) ? a : b);
+		const Coordinates &second =
+		    this->onX ? ((a.x <= b.x) ? b : a) : ((a.y <= b.y) ? b : a);
 
-		if (this->onX)
-		{
-			if (first.x >= this->first.x)
-			{
+		if (this->onX) {
+			if (first.x >= this->first.x) {
 				destination = &this->greaterThanEqualTo;
-			}
-			else
-			{
+				cout << "Inserted on the right\n";
+
+			} else {
 				destination = &this->lessThan;
+				cout << "Inserted on the left\n";
 			}
-		}
-		else
-		{
-			if (first.y >= this->first.y)
-			{
+		} else {
+			if (first.y >= this->first.y) {
 				destination = &this->greaterThanEqualTo;
-			}
-			else
-			{
+				cout << "Inserted on the right\n";
+			} else {
 				destination = &this->lessThan;
+				cout << "Inserted on the left\n";
 			}
 		}
 
-		if ((*destination) == nullptr)
-		{
+		if ((*destination) == nullptr) {
 			(*destination) = new CollisionTree(first, second, this->onX);
-		}
-		else
-		{
+		} else {
 			(*destination)->addOne(first, second);
 		}
 
 		this->rebalance();
 	}
 
-	shared_ptr<pair<Coordinates, Coordinates>> CollisionTree::popOne()
-	{
-		int left = (this->lessThan == nullptr) ? 0 : this->lessThan->collisionCount;
-		int right = (this->greaterThanEqualTo == nullptr) ? 0 : this->greaterThanEqualTo->collisionCount;
-		int diff = left - right;
+	pair<bool, shared_ptr<pair<Coordinates, Coordinates>>>
+	CollisionTree::popOne() {
 		this->collisionCount--;
+		auto result = shared_ptr<pair<Coordinates, Coordinates>>(
+		    new pair<Coordinates, Coordinates>(this->first, this->second));
 
-		shared_ptr<pair<Coordinates, Coordinates>> result = nullptr;
+		int lessThanLength =
+		    this->lessThan == nullptr ? 0 : this->lessThan->collisionCount;
+		int greaterThanEqualLength =
+		    this->greaterThanEqualTo == nullptr
+		        ? 0
+		        : this->greaterThanEqualTo->collisionCount;
 
-		if (diff > 0)
-		{
-			result = this->lessThan->popOne();
-			if (result == nullptr)
-			{
-				result = this->lessThan->getRootCoordinates();
-				delete this->lessThan;
+		pair<bool, shared_ptr<pair<Coordinates, Coordinates>>> subPop(false,
+		                                                              nullptr);
+
+		if (greaterThanEqualLength == 0 && lessThanLength == 0) {
+
+		} else if (greaterThanEqualLength >= lessThanLength) {
+			subPop = this->greaterThanEqualTo->popOne();
+			if (subPop.first) {
+				this->greaterThanEqualTo = nullptr;
+			}
+		} else {
+			subPop = this->lessThan->popOne();
+			if (subPop.first) {
 				this->lessThan = nullptr;
 			}
 		}
-		else if (right == 0)
-		{
-			return nullptr;
-		}
-		else
-		{
-			result = this->greaterThanEqualTo->popOne();
-			if (result == nullptr)
-			{
-				result = this->greaterThanEqualTo->getRootCoordinates();
-				delete this->greaterThanEqualTo;
-				this->greaterThanEqualTo = nullptr;
-			}
+
+		if (subPop.second != nullptr) {
+			this->first = subPop.second->first;
+			this->second = subPop.second->second;
+		} else {
+			delete this;
 		}
 
-		this->first = result->first;
-		this->second = result->second;
-
-		return this->getRootCoordinates();
+		return pair<bool, shared_ptr<pair<Coordinates, Coordinates>>>(
+		    subPop.second == nullptr, result);
 	}
 
-	shared_ptr<pair<Coordinates, Coordinates>> CollisionTree::getRootCoordinates()
-	{
-		return shared_ptr<pair<Coordinates, Coordinates>>(new pair(this->first, this->second));
+	shared_ptr<pair<Coordinates, Coordinates>>
+	CollisionTree::getRootCoordinates() {
+		return shared_ptr<pair<Coordinates, Coordinates>>(
+		    new pair(this->first, this->second));
 	}
 
-	void CollisionTree::rebalance()
-	{
-		int left = (this->lessThan == nullptr) ? 0 : this->lessThan->collisionCount;
-		int right = (this->greaterThanEqualTo == nullptr) ? 0 : this->greaterThanEqualTo->collisionCount;
+	void CollisionTree::rebalance() {
+		int leftLength =
+		    (this->lessThan == nullptr) ? 0 : this->lessThan->collisionCount;
+		int rightLength = (this->greaterThanEqualTo == nullptr)
+		                      ? 0
+		                      : this->greaterThanEqualTo->collisionCount;
 
-		if (right - left > 1)
-		{
-			auto popped = this->greaterThanEqualTo->popOne();
-			if (popped == nullptr)
-			{
-				popped = this->greaterThanEqualTo->getRootCoordinates();
-				delete this->greaterThanEqualTo;
-				this->greaterThanEqualTo = nullptr;
-			}
-			if (this->lessThan == nullptr)
-			{
-				this->lessThan = new CollisionTree(popped->first, popped->second, this->onX);
-			}
-			else
-			{
-				this->lessThan->addOne(popped->first, popped->second);
-			}
+		while (abs(rightLength - leftLength) > 1) {
+			auto popped = this->popOne();
+
+			this->addOne(popped.second->first, popped.second->second);
+
+			leftLength = (this->lessThan == nullptr)
+			                 ? 0
+			                 : this->lessThan->collisionCount;
+			rightLength = (this->greaterThanEqualTo == nullptr)
+			                  ? 0
+			                  : this->greaterThanEqualTo->collisionCount;
 		}
-		else if (left - right > 1)
-		{
-			auto popped = this->lessThan->popOne();
-			if (popped == nullptr)
-			{
-				popped = this->lessThan->getRootCoordinates();
-				delete this->lessThan;
-				this->lessThan = nullptr;
-			}
-			if (this->greaterThanEqualTo == nullptr)
-			{
-				this->greaterThanEqualTo = new CollisionTree(popped->first, popped->second, this->onX);
-			}
-			else
-			{
-				this->greaterThanEqualTo->addOne(popped->first, popped->second);
-			}
-		}
+	}
+
+	int CollisionTree::getCount() {
+		int lessThanLength =
+		    this->lessThan == nullptr ? 0 : this->lessThan->getCount();
+		int greaterThanEqualLength =
+		    this->greaterThanEqualTo == nullptr
+		        ? 0
+		        : this->greaterThanEqualTo->getCount();
+		
+		return 1 + lessThanLength + greaterThanEqualLength;
 	}
 } // namespace Esperatto

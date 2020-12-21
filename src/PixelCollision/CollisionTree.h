@@ -14,7 +14,7 @@ namespace Esperatto
 		CollisionTree *lessThan = nullptr;
 		CollisionTree *greaterThanEqualTo = nullptr;
 		int collisionCount = 1;
-		shared_ptr<pair<Coordinates, Coordinates>> popOne();
+		pair<bool, shared_ptr<pair<Coordinates, Coordinates>>> popOne();
 		bool onX = true;
 		void rebalance();
 
@@ -22,7 +22,7 @@ namespace Esperatto
 		CollisionTree(const Coordinates &a, const Coordinates &b, bool onX = true);
 		shared_ptr<pair<Coordinates, Coordinates>> getRootCoordinates();
 		void addOne(const Coordinates &a, const Coordinates &b);
-		int getCount() { return this->collisionCount; }
+		int getCount();
 	};
 } // namespace Esperatto
 
