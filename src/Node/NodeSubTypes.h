@@ -7,13 +7,23 @@
 using namespace std;
 
 namespace Esperatto {
+	class NodeSubtype;
+	/*
+		Sub data should always implement the declareParent function so that child objects
+			can get and manipulate their node parents.
+		TODO: Finish writing the code to pass this data around.
+	*/
+	class Subdata {
+		virtual void declareParent(const NodeSubtype &parent);
+	};
+
 	class NodeSubtype {
 		void (*dataDeleter)(shared_ptr<void>);
 		shared_ptr<void> data;
 		size_t type;
 
-	  private:
-	  	NodeSubtype(void (*dataDeleter)(shared_ptr<void>), shared_ptr<void> data, size_t type);
+	  public:
+	  	NodeSubtype(void (*dataDeleter)(shared_ptr<void>), shared_ptr<Subdata> data, size_t type);
 		~NodeSubtype();
 
 		shared_ptr<void> getData(){

@@ -36,7 +36,7 @@ namespace Esperatto {
 			multiset<Node> children;
 			shared_ptr<foreign_data> parent ;
 
-			template <typename T>
+			template <typename T, typename = enable_if_t<is_base_of_v<Subdata, T>>>
 			foreign_data(shared_ptr<T> data)
 			    : subdata([](shared_ptr<void> toDelete) { 
 					// delete (shared_ptr<T>)(toDelete); 
@@ -50,7 +50,7 @@ namespace Esperatto {
 		Transform getTransform();
 
 	  public:
-		template <class T>
+		template <typename T, typename = enable_if_t<is_base_of_v<Subdata, T>>>
 		Node(shared_ptr<T> d) {
 			this->data = make_shared<foreign_data>(d);
 			this->data->referenceCount = 1;

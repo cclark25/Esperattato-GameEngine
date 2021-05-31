@@ -8,7 +8,7 @@ libxmFLAGS= -I./Dependencies/libxm/src -I./Dependencies/libxm/include -I/usr/inc
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
-./BUILD/Esperattato.o: $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o
+./BUILD/Esperattato.o: $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o $(OUT_DIR)/collisionSquare.o
 	g++ $(CXXFLAGS) $(libxmFLAGS) $(OUT_DIR)/libxm/*.o $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -fPIC
 
 # $(DEPENDENCIES):
@@ -16,6 +16,10 @@ OUT_DIR=./BUILD/object_files
 
 test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/main.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+
+testCollision: ./BUILD/Esperattato.o
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/collisionTest.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+
 
 $(OUT_DIR)/Animation.o: ./src/Animation/Animation.h ./src/Animation/Animation.cpp ./src/Image/Image.h
 	$(CXX) $(CXXFLAGS) -c ./src/Animation/Animation.cpp -fPIC -o "$(OUT_DIR)/Animation.o"
@@ -49,6 +53,10 @@ $(OUT_DIR)/PixelCollision.o: ./src/PixelCollision/PixelCollision.cpp ./src/Pixel
 
 $(OUT_DIR)/CollisionTree.o: ./src/PixelCollision/CollisionTree.cpp ./src/PixelCollision/CollisionTree.h 
 	$(CXX) $(CXXFLAGS)  -c ./src/PixelCollision/CollisionTree.cpp -fPIC -o "$(OUT_DIR)/CollisionTree.o"
+
+$(OUT_DIR)/collisionSquare.o: ./src/PixelCollision/v2/collisionSquare.cpp ./src/PixelCollision/v2/collisionSquare.h 
+	$(CXX) $(CXXFLAGS)  -c ./src/PixelCollision/v2/collisionSquare.cpp -fPIC -o "$(OUT_DIR)/collisionSquare.o"
+
 
 $(OUT_DIR)/libxm: ./Dependencies/libxm/src/* 
 	[ -e $(OUT_DIR)/libxm ] || mkdir $(OUT_DIR)/libxm
