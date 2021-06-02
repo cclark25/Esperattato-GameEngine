@@ -5,9 +5,9 @@
 #include "NodeSubTypes.h"
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <set>
 #include <utility>
-#include <memory>
 using namespace std;
 
 namespace Esperatto {
@@ -17,6 +17,8 @@ namespace Esperatto {
 	};
 
 	struct SovereignNode;
+	class NodeSubtype;
+	class Subdata;
 
 	class Node {
 
@@ -32,18 +34,19 @@ namespace Esperatto {
 			double yScale = 1;
 			double zIndex = 0;
 			unsigned int referenceCount = 0;
-			NodeSubtype subdata;
+			shared_ptr<NodeSubtype> subdata;
 			multiset<Node> children;
-			shared_ptr<foreign_data> parent ;
+			shared_ptr<foreign_data> parent;
 
-			template <typename T, typename = enable_if_t<is_base_of_v<Subdata, T>>>
-			foreign_data(shared_ptr<T> data)
-			    : subdata([](shared_ptr<void> toDelete) { 
-					// delete (shared_ptr<T>)(toDelete); 
-				}, 
-					data,
-					typeid(T).hash_code()
-					) {}
+			template <typename T,
+			          typename = enable_if_t<is_base_of_v<Subdata, T>>>
+			foreign_data(shared_ptr<T> data) {
+				this->subdata = make_shared<NodeSubtype>(
+				    [](shared_ptr<void> toDelete) {
+					    // delete (shared_ptr<T>)(toDelete);
+				    },
+				    data, typeid(T).hash_code());
+			}
 		};
 		shared_ptr<foreign_data> data;
 
@@ -54,6 +57,7 @@ namespace Esperatto {
 		Node(shared_ptr<T> d) {
 			this->data = make_shared<foreign_data>(d);
 			this->data->referenceCount = 1;
+			d->declareParent(this);
 		}
 
 		Node(const Node &original);
@@ -96,8 +100,6 @@ namespace Esperatto {
 		multiset<SovereignNode> makeNodeSet(SovereignNode parent);
 
 		void foreach (function<void(Node)> func);
-
-
 
 		friend bool operator<(const Node &first, const Node &second) {
 			return first.data->zIndex < second.data->zIndex;

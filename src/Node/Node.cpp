@@ -219,10 +219,10 @@ namespace Esperatto {
 		}
 	}
 
-	size_t Node::getSubType() { return this->data->subdata.getType(); }
+	size_t Node::getSubType() { return this->data->subdata->getType(); }
 
 	shared_ptr<void> Node::getDataPtr(){
-		return this->data->subdata.getData();
+		return this->data->subdata->getData();
 	}
 
 	multiset<Node> &Node::getChildren() {

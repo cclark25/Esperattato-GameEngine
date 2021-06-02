@@ -1,5 +1,6 @@
 #include "collisionSquare.h"
 #include "../../Node/Node.h"
+#include "../../Node/NodeSubTypes.h"
 
 namespace Esperatto {
 	bool overlaps(double a1, double a2,double b1, double b2);
@@ -14,10 +15,11 @@ namespace Esperatto {
 	}
 
 	bool CollisionSquare::Intersects(const CollisionSquare &otherSquare){
-		bool xOverlap = overlaps(this->data->xPosition, this->second.x, otherSquare.data->xPosition, otherSquare.data->xPosition);
-		bool yOverlap = overlaps(this->data->yPosition, this->second.y, otherSquare.data->yPosition, otherSquare.data->yPosition);
+		// bool xOverlap = overlaps(this->data->xPosition, this->second.x, otherSquare.data->xPosition, otherSquare.data->xPosition);
+		// bool yOverlap = overlaps(this->data->yPosition, this->second.y, otherSquare.data->yPosition, otherSquare.data->yPosition);
 		
-		return xOverlap && yOverlap;
+		// return xOverlap && yOverlap;
+		return true;
 	}
 
 	bool overlaps(double a1, double a2,double b1, double b2){

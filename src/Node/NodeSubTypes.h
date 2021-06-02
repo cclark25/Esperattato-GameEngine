@@ -4,17 +4,16 @@
 #include <map>
 #include <utility>
 #include <memory>
+#include <iostream>
+#include "Node.h"
 using namespace std;
 
 namespace Esperatto {
+	class Node;
 	class NodeSubtype;
-	/*
-		Sub data should always implement the declareParent function so that child objects
-			can get and manipulate their node parents.
-		TODO: Finish writing the code to pass this data around.
-	*/
 	class Subdata {
-		virtual void declareParent(const NodeSubtype &parent);
+		virtual void declareParent(const Node *parent) {
+		}
 	};
 
 	class NodeSubtype {

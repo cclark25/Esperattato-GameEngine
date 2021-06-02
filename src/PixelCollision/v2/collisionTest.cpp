@@ -93,6 +93,9 @@ int main(int argc, char **args) {
 	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
 	// if(x) throw "Test Failed!"; 
 
+	// const auto x = CollisionSquare(Coordinates({0,0}), true);
+	auto x = make_shared<CollisionSquare>(Coordinates({0,0}), true);
+	Node root = Node(x);
 
 	al_uninstall_audio();
 

@@ -5,6 +5,7 @@
 #include <map>
 // #include "../../Image/Image.h"
 #include "../../Node/Node.h"
+#include "../../Node/NodeSubTypes.h"
 
 namespace Esperatto
 {
@@ -16,8 +17,12 @@ namespace Esperatto
 	public:
 		CollisionSquare(const Coordinates &b, bool onX);
 		bool Intersects(const CollisionSquare &otherSquare);
-		void declareParent(const NodeSubtype &parent){
-			std::cout << "declareParent called" << std::endl;
+		/*
+			TODO: This declareParent function gets called successfully. Now we need to modify this class to
+			store this pointer and reference the parent Node object to test basic collisions.
+		*/
+		void declareParent(const Node *parent){
+			std::cout << "declareParent called." << std::endl;
 		}
 	};
 } // namespace Esperatto
