@@ -14,16 +14,12 @@ namespace Esperatto
 	private:
 		bool onX = true;
 		Coordinates second;
+		Node *parent = nullptr;
 	public:
 		CollisionSquare(const Coordinates &b, bool onX);
 		bool Intersects(const CollisionSquare &otherSquare);
-		/*
-			TODO: This declareParent function gets called successfully. Now we need to modify this class to
-			store this pointer and reference the parent Node object to test basic collisions.
-		*/
-		void declareParent(const Node *parent){
-			std::cout << "declareParent called." << std::endl;
-		}
+		
+		void declareParent(Node *parent);
 	};
 } // namespace Esperatto
 

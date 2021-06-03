@@ -94,8 +94,15 @@ int main(int argc, char **args) {
 	// if(x) throw "Test Failed!"; 
 
 	// const auto x = CollisionSquare(Coordinates({0,0}), true);
-	auto x = make_shared<CollisionSquare>(Coordinates({0,0}), true);
-	Node root = Node(x);
+	auto x = make_shared<CollisionSquare>(Coordinates({3,3}), true);
+	Node root = Node(make_shared<CollisionSquare>(Coordinates({10,10}), true));
+	Node secondNode = Node(x);
+	root.setPositionInParent(10,10);
+
+	root.addChild(secondNode);
+	secondNode.setPositionInParent(3,3);
+
+	x->Intersects(*x);
 
 	al_uninstall_audio();
 
