@@ -18,8 +18,8 @@ namespace Esperatto
 	public:
 		CollisionSquare(const Coordinates &b, bool onX);
 		bool Intersects(const CollisionSquare &otherSquare);
-		
 		void declareParent(Node *parent);
+		void setSecondCoords(const Coordinates& coords);
 	};
 } // namespace Esperatto
 

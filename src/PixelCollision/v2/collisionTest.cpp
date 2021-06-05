@@ -34,75 +34,109 @@ int main(int argc, char **args) {
 	al_install_audio();
 
 	al_reserve_samples(1);
+	Node root = Node(make_shared<CollisionSquare>(Coordinates({10,10}), true));
+	Node second = Node(make_shared<CollisionSquare>(Coordinates({15,15}), true));
+	auto rootSquare = *((CollisionSquare*) root.getDataPtr().get());
+	auto secondSquare = *((CollisionSquare*) second.getDataPtr().get());
 
-	// bool x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({5,5}),Coordinates({15,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(!x) throw "Test Failed!"; 
+	/*
+		TODO: rewrite all of these tests from scratch
+	*/
+	// Coordinates({5,5})
+	second.setPositionInParent(5,5);
+	bool x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(!x) throw std::logic_error("Test Failed!"); 
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({10,5}),Coordinates({15,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(!x) throw "Test Failed!"; 
+	// Coordinates({10,5})
+	second.setPositionInParent(10,5);
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(!x) throw std::logic_error("Test Failed!"); 
 	
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({11,5}),Coordinates({15,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(x) throw "Test Failed!"; 
+	// Coordinates({11,5})
+	second.setPositionInParent(11,5);
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(x) throw std::logic_error("Test Failed!"); 
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({-10,5}),Coordinates({15,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(!x) throw "Test Failed!"; 
+	// Coordinates({-10,5})
+	second.setPositionInParent(-10,5);
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(!x) throw std::logic_error("Test Failed!"); 
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({-10,5}),Coordinates({0,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(!x) throw "Test Failed!"; 
+	// Coordinates({-10,5})
+	root.setPositionInParent(-10,5);
+	secondSquare.setSecondCoords(Coordinates({0,15}));
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(!x) throw std::logic_error("Test Failed!"); 
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({-10,5}),Coordinates({-1,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(x) throw "Test Failed!"; 
+	// Coordinates({-10,5}))
+	root.setPositionInParent(-10,5);
+	secondSquare.setSecondCoords(Coordinates({-1,15}));
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(x) throw std::logic_error("Test Failed!"); 
 
 
-	// //
+	//
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({5,10}),Coordinates({15,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(!x) throw "Test Failed!"; 
+	// Coordinates({5,10})
+	second.setPositionInParent(5,10);
+	secondSquare.setSecondCoords(Coordinates({15,15}));
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(!x) throw std::logic_error("Test Failed!"); 
 	
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({5,11}),Coordinates({15,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(x) throw "Test Failed!"; 
+	// Coordinates({5,11})
+	second.setPositionInParent(5,11);
+	secondSquare.setSecondCoords(Coordinates({15,15}));
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(x) throw std::logic_error("Test Failed!"); 
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({5,-10}),Coordinates({15,15}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(!x) throw "Test Failed!"; 
+	// Coordinates({5,-10})
+	second.setPositionInParent(5,-10);
+	secondSquare.setSecondCoords(Coordinates({15,15}));
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(!x) throw std::logic_error("Test Failed!"); 
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({5,-10}),Coordinates({15,0}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(!x) throw "Test Failed!"; 
+	// Coordinates({5,-10})
+	second.setPositionInParent(5,-10);
+	secondSquare.setSecondCoords(Coordinates({15,0}));
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(!x) throw std::logic_error("Test Failed!"); 
 
-	// x = CollisionSquare(Coordinates({0,0}),Coordinates({10,10}), true)
-	// 	.Intersects(CollisionSquare(Coordinates({5,-10}),Coordinates({15,-1}), true));
-	// std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
-	// if(x) throw "Test Failed!"; 
+	// Coordinates({5,-10})
+	second.setPositionInParent(5, -10);
+	secondSquare.setSecondCoords(Coordinates({15, -1}));
+	x = rootSquare
+		.Intersects(secondSquare);
+	std::cout << "Collision: " << (x ? "True" : "False") << std::endl; 
+	if(x) throw std::logic_error("Test Failed!"); 
 
 	// const auto x = CollisionSquare(Coordinates({0,0}), true);
-	auto x = make_shared<CollisionSquare>(Coordinates({3,3}), true);
-	Node root = Node(make_shared<CollisionSquare>(Coordinates({10,10}), true));
-	Node secondNode = Node(x);
-	root.setPositionInParent(10,10);
+	// Node secondNode = Node(x);
+	// root.setPositionInParent(10,10);
 
-	root.addChild(secondNode);
-	secondNode.setPositionInParent(3,3);
+	// root.addChild(secondNode);
+	// secondNode.setPositionInParent(3,3);
 
-	x->Intersects(*x);
+	// x->Intersects(*x);
 
 	al_uninstall_audio();
 
