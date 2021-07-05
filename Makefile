@@ -19,7 +19,8 @@ test: ./BUILD/Esperattato.o
 
 basic-collision-square-test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/basic-collision-square-test.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
-
+nested-collision-square-test: ./BUILD/Esperattato.o
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/nested-collision-square-test.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
 $(OUT_DIR)/Animation.o: ./src/Animation/Animation.h ./src/Animation/Animation.cpp ./src/Image/Image.h
 	$(CXX) $(CXXFLAGS) -c ./src/Animation/Animation.cpp -fPIC -o "$(OUT_DIR)/Animation.o"

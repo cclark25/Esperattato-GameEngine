@@ -71,41 +71,17 @@ int main(int argc, char **args) {
 
 	al_reserve_samples(1);
 
-	// Test a complete overlap.
-	testIntersection({0, 0}, {10, 10}, {0, 0}, {10, 10}, true);
+	Node first = Node(make_shared<CollisionSquare>(
+	    Coordinates({0, 0}), Coordinates({10,10}), true));
+	Node second = Node(make_shared<CollisionSquare>(
+	    Coordinates({0, 0}), Coordinates({10,10}), true));
+	auto firstSquare = *((CollisionSquare *)first.getDataPtr().get());
+	auto secondSquare = *((CollisionSquare *)second.getDataPtr().get());
 
-	// Test partial complete overlaps.
-	testIntersection({0, 0}, {10, 10}, {1, 0}, {10, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 1}, {10, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {1, 1}, {10, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 0}, {9, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 0}, {10, 9}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 0}, {9, 9}, true);
+	firstSquare.addSubSquare(CollisionSquare({0,0}, {5,5}, true));
+	secondSquare.addSubSquare(CollisionSquare({6,6}, {10,10}, true));
 
-	// Test full inter overlap.
-	testIntersection({0, 0}, {10, 10}, {1, 1}, {9, 9}, true);
-
-	// Test partial outer overlap.
-	testIntersection({0, 0}, {10, 10}, {-1, 0}, {10, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {0, -1}, {10, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {-1, -1}, {10, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 0}, {10, 11}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 0}, {11, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 0}, {11, 11}, true);
-
-	// Test complete outer overlap.
-	testIntersection({0, 0}, {10, 10}, {-1, -1}, {11, 11}, true);
-
-	// Test non-intersections.
-
-	testIntersection({0, 0}, {10, 10}, {11, 0}, {20, 10}, false);
-	testIntersection({0, 0}, {10, 10}, {0, 11}, {10, 20}, false);
-	testIntersection({0, 0}, {10, 10}, {11, 11}, {21, 21}, false);
-
-	// Test barely intersecting.
-
-	testIntersection({0, 0}, {10, 10}, {10, 0}, {20, 10}, true);
-	testIntersection({0, 0}, {10, 10}, {0, 10}, {10, 20}, true);
+	std::cout << (firstSquare.Intersects(secondSquare) ? "Intersects" : "Does not intersect") << std::endl;
 
 	al_uninstall_audio();
 
