@@ -1,1 +1,1 @@
-make testCollision 
+make basic-collision-square-test 

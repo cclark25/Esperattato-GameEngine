@@ -17,8 +17,8 @@ OUT_DIR=./BUILD/object_files
 test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/main.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
-testCollision: ./BUILD/Esperattato.o
-	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/collisionTest.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+basic-collision-square-test: ./BUILD/Esperattato.o
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/basic-collision-square-test.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
 
 $(OUT_DIR)/Animation.o: ./src/Animation/Animation.h ./src/Animation/Animation.cpp ./src/Image/Image.h
