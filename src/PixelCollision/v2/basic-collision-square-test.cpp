@@ -1,4 +1,4 @@
-
+#define DEBUG a
 #include "../.././Types.h"
 #include "../.././XM/XM.h"
 #include "../../Animation/Animation.h"
@@ -106,6 +106,8 @@ int main(int argc, char **args) {
 
 	testIntersection({0, 0}, {10, 10}, {10, 0}, {20, 10}, true);
 	testIntersection({0, 0}, {10, 10}, {0, 10}, {10, 20}, true);
+
+	std::cout << "Test completed." << std::endl;
 
 	al_uninstall_audio();
 

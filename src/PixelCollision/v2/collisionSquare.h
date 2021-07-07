@@ -34,6 +34,7 @@ namespace Esperatto {
 		void setFirstCoords(const Coordinates &coords);
 		void setSecondCoords(const Coordinates &coords);
 		void addSubSquare(CollisionSquare sub);
+		string toString();
 	};
 } // namespace Esperatto
 

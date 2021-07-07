@@ -10,49 +10,74 @@ namespace Esperatto {
 
 		this->onX = onX;
 
-		this->second = a;
+		this->first = a;
 		this->second = b;
 	}
 
 	bool CollisionSquare::Intersects(const CollisionSquare &otherSquare) const {
+		double x1, x2, x3, x4;
+		double y1, y2, y3, y4;
 
-		Coordinates rootCoords = this->parent != nullptr
-		                             ? this->parent->getGlobalPosition()
-		                             : Coordinates({0, 0});
-		Coordinates otherCoords = otherSquare.parent != nullptr
-		                              ? otherSquare.parent->getGlobalPosition()
-		                              : Coordinates({0, 0});
+		x1 = this->first.x;
+		x2 = this->second.x;
+		x3 = otherSquare.first.x;
+		x4 = otherSquare.second.x;
+		y1 = this->first.y;
+		y2 = this->second.y;
+		y3 = otherSquare.first.y;
+		y4 = otherSquare.second.y;
 
-		// std::cout << "Root Coords: (" << rootCoords.x << "," << rootCoords.y
-		//           << ")" << std::endl;
-		std::cout << "Root Second Coords Adjusted: ("
-		          << rootCoords.x + this->second.x << ","
-		          << rootCoords.y + this->second.y << ")" << std::endl;
-		// std::cout << "Other Coords: (" << otherCoords.x << "," << otherCoords.y
-		//           << ")" << std::endl;
-		std::cout << "Other Second Coords Adjusted: ("
-		          << otherCoords.x + otherSquare.second.x << ","
-		          << otherCoords.y + otherSquare.second.y << ")" << std::endl;
+		if (this->parent != nullptr) {
+			const Coordinates parentTransform =
+			    this->parent->getGlobalPosition();
+			x1 += parentTransform.x;
+			x2 += parentTransform.x;
+			y1 += parentTransform.y;
+			y2 += parentTransform.y;
+		}
+		if (otherSquare.parent != nullptr) {
+			const Coordinates parentTransform =
+			    otherSquare.parent->getGlobalPosition();
+			x3 += parentTransform.x;
+			x4 += parentTransform.x;
+			y3 += parentTransform.y;
+			y4 += parentTransform.y;
+		}
 
-		bool xOverlap =
-		    overlaps(rootCoords.x, rootCoords.x + this->second.x, otherCoords.x,
-		             otherCoords.x + otherSquare.second.x);
-		bool yOverlap =
-		    overlaps(rootCoords.y, rootCoords.y + this->second.y, otherCoords.y,
-		             otherCoords.y + otherSquare.second.y);
+		/*
+		        std::cout << "Root First Coords: " + Coordinates({x1,
+		   y1}).toString()
+		                  << std::endl;
+
+		        std::cout << "Root Second Coords: " + Coordinates({x2,
+		   y2}).toString()
+		                  << std::endl;
+
+		        std::cout << "Other First Coords: " + Coordinates({x3,
+		   y3}).toString()
+		                  << std::endl;
+
+		        std::cout << "Other Second Coords: " + Coordinates({x4,
+		   y4}).toString()
+		                  << std::endl;
+		*/
+
+		bool xOverlap = overlaps(x1, x2, x3, x4);
+		bool yOverlap = overlaps(y1, y2, y3, y4);
 
 		bool overlap = xOverlap && yOverlap;
 
-		if(!overlap || this->subSquares.size() == 0){
+		if (!overlap || this->subSquares.size() == 0) {
 			return overlap;
-		}
-		else {
+		} else {
 			std::cout << "subSquares has records. Testing them." << std::endl;
 		}
 
 		for (const CollisionSquare &subSquare : this->subSquares) {
-			if(otherSquare.Intersects(subSquare)){
-				std::cout << "Matched a sub square. Collision detected." << std::endl;
+			if (otherSquare.Intersects(subSquare)) {
+				std::cout << "Matched a sub square. Collision detected."
+				          << std::endl;
+
 				return true;
 			}
 		}
@@ -84,8 +109,14 @@ namespace Esperatto {
 		this->second.y = coords.y;
 	}
 
-	void CollisionSquare::addSubSquare(CollisionSquare sub){
+	void CollisionSquare::addSubSquare(CollisionSquare sub) {
 		this->subSquares.push_back(sub);
 		this->subSquares.back().declareParent(this->parent);
 	}
+
+	string CollisionSquare::toString() {
+		return "(" + this->first.toString() + "," + this->second.toString() +
+		       ")";
+	}
+
 } // namespace Esperatto

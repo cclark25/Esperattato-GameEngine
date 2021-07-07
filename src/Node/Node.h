@@ -14,6 +14,7 @@ namespace Esperatto {
 	struct Coordinates {
 		double x;
 		double y;
+		string toString();
 	};
 
 	struct SovereignNode;

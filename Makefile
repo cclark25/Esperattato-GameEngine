@@ -1,6 +1,6 @@
 CXX= g++
 CXXFLAGS= -std=c++17 -Wall -pedantic -ggdb
-CFLAGS=  -Wall -pedantic -ggdb -fPIC
+CFLAGS=  -Wall -pedantic -ggdb -fPIC 
 
 libxmFLAGS= -I./Dependencies/libxm/src -I./Dependencies/libxm/include -I/usr/include
 # RM= rm -vf

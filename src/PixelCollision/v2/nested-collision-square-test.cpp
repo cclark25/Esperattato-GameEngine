@@ -71,17 +71,22 @@ int main(int argc, char **args) {
 
 	al_reserve_samples(1);
 
-	Node first = Node(make_shared<CollisionSquare>(
-	    Coordinates({0, 0}), Coordinates({10,10}), true));
-	Node second = Node(make_shared<CollisionSquare>(
-	    Coordinates({0, 0}), Coordinates({10,10}), true));
-	auto firstSquare = *((CollisionSquare *)first.getDataPtr().get());
-	auto secondSquare = *((CollisionSquare *)second.getDataPtr().get());
+	auto firstSquare = CollisionSquare(
+	    Coordinates({0, 0}), Coordinates({10,10}), true);
 
-	firstSquare.addSubSquare(CollisionSquare({0,0}, {5,5}, true));
-	secondSquare.addSubSquare(CollisionSquare({6,6}, {10,10}, true));
+	auto secondSquare = CollisionSquare(
+	    Coordinates({0, 0}), Coordinates({10,10}), true);
+
+	auto thirdSquare = CollisionSquare({0,0}, {5,5}, true);
+	auto fourthSquare = CollisionSquare({6,6}, {10,10}, true);
+
+	firstSquare.addSubSquare(thirdSquare);
+	secondSquare.addSubSquare(fourthSquare);
 
 	std::cout << (firstSquare.Intersects(secondSquare) ? "Intersects" : "Does not intersect") << std::endl;
+	std::cout << (thirdSquare.Intersects(fourthSquare) ? "Intersects" : "Does not intersect") << std::endl;
+	std::cout << thirdSquare.toString() << std::endl;
+	std::cout << fourthSquare.toString() << std::endl;
 
 	al_uninstall_audio();
 

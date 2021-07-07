@@ -4,6 +4,9 @@
 using namespace std;
 
 namespace Esperatto {
+	string Coordinates::toString(){
+		return "{" + to_string(this->x) + "," + to_string(this->y) + "}";
+	}
 
 	Node::Node(const Node &original){ //: data(original.data) {
 		data = original.data;
