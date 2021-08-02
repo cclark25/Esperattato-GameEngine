@@ -51,7 +51,8 @@ int main(int argc, char **args)
 			escapePressed = true;
 		});
 
-	Node root = Node(std::shared_ptr<char>(new char(1)));
+	class N : public Subdata {};
+	Node root = Node(std::shared_ptr<N>(new N()));
 
 	root.setPositionInParent(0, 0);
 	root.setCenterOfRotation(128, 112);
@@ -59,9 +60,9 @@ int main(int argc, char **args)
 	Node last = root;
 	shared_ptr<ThreadWork> w = shared_ptr<ThreadWork>(new ThreadWork());
 	std::srand(time(NULL));
-	for (int i = 0; i < 60; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Moma.png", 3, 1, 10)));
+		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Down.png", 3, 1, 10)));
 		newNode.setPositionInParent(0 + 32 * (i % 8), 0 + 40 * (i / 8));
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);

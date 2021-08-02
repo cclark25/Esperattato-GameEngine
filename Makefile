@@ -8,19 +8,25 @@ libxmFLAGS= -I./Dependencies/libxm/src -I./Dependencies/libxm/include -I/usr/inc
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
 
-./BUILD/Esperattato.o: $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o $(OUT_DIR)/collisionSquare.o
+$(OUT_DIR)/Game.o:  $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o $(OUT_DIR)/collisionSquare.o
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) -c ./src/core/Game.cpp -o "$(OUT_DIR)/Game.o" -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -fPIC
+
+./BUILD/Esperattato.o: $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o $(OUT_DIR)/collisionSquare.o $(OUT_DIR)/Game.o 
 	g++ $(CXXFLAGS) $(libxmFLAGS) $(OUT_DIR)/libxm/*.o $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -fPIC
 
 # $(DEPENDENCIES):
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
 
 test: ./BUILD/Esperattato.o
-	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/main.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/main1.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
 basic-collision-square-test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/basic-collision-square-test.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 nested-collision-square-test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/nested-collision-square-test.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+graphical-collision-square-test: ./BUILD/Esperattato.o
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/graphical-collision-square-test.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+
 
 $(OUT_DIR)/Animation.o: ./src/Animation/Animation.h ./src/Animation/Animation.cpp ./src/Image/Image.h
 	$(CXX) $(CXXFLAGS) -c ./src/Animation/Animation.cpp -fPIC -o "$(OUT_DIR)/Animation.o"

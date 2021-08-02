@@ -1,6 +1,7 @@
 #ifndef ESPERATTO_IMAGE
 #define ESPERATTO_IMAGE
 #include "../Types.h"
+#include "../Node/NodeSubTypes.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -14,12 +15,12 @@ namespace Esperatto {
 		unsigned int referenceCount = 0;
 	};
 	static map<string, shared_ptr<imageData> > loadedMap;
-	class Image {
+	class Image : public Subdata {
 	  protected:
 		shared_ptr<imageData> data;
 
 	  public:
-		Image(string path) {
+		Image(string path){
 			try {
 				data = loadedMap.at(path);
 				data->referenceCount++;

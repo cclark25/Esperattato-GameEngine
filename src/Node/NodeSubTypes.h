@@ -12,6 +12,7 @@ namespace Esperatto {
 	class Node;
 	class NodeSubtype;
 	class Subdata {
+		public:
 		virtual void declareParent(const Node *parent) {
 		}
 	};
