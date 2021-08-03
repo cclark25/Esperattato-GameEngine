@@ -1,5 +1,6 @@
 #ifndef ESPERATTATO_THREAD_WORKER_DEF
 #define ESPERATTATO_THREAD_WORKER_DEF
+#include "../Process/Process.h"
 #include <utility>
 #include <mutex>
 #include <queue>
@@ -12,7 +13,6 @@ using namespace std;
 namespace Esperatto
 {
 
-class Process;
 
 
 class ThreadWork {

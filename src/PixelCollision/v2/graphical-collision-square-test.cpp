@@ -50,6 +50,8 @@ int main() {
 	game.rootNode.setPositionInParent(0, 0);
 	game.camera.setPosition(0, 0);
 
+	game.StartGame();
+
 	
 	return 0;
 }
