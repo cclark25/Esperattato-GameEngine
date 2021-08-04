@@ -1,13 +1,13 @@
 
 #include "Animation/Animation.h"
-#include "Camera/Camera.h"
-#include "Image/Image.h"
-#include "Keyboard/Keyboard.h"
-#include "Node/Node.h"
-#include "Process/Process.h"
-#include "Screen/Screen.h"
-#include "./Types.h"
-#include "ThreadWorker/ThreadWorker.h"
+// #include "Camera/Camera.h"
+// #include "Image/Image.h"
+// #include "Keyboard/Keyboard.h"
+// #include "Node/Node.h"
+// #include "Process/Process.h"
+// #include "Screen/Screen.h"
+// #include "./Types.h"
+// #include "ThreadWorker/ThreadWorker.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
@@ -19,54 +19,53 @@
 #include <map>
 #include <unistd.h>
 #include <memory>
-#include "./XM/XM.h"
+// #include "./XM/XM.h"
+#include "core/Game.h"
 
 using namespace Esperatto;
 
-void playSong()
-{
-	auto xm = XM::create_context_from_file(48000, "./Test_Files/kam_-_mario_brothers.xm");
-	auto sample = XM::copyToBuffer(xm);
-	bool played = al_play_sample(sample, 1, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
-	cout << "Sample " << (played ? "" : "not ") << "played." << endl;
-}
+// void playSong()
+// {
+// 	auto xm = XM::create_context_from_file(48000, "./Test_Files/kam_-_mario_brothers.xm");
+// 	auto sample = XM::copyToBuffer(xm);
+// 	bool played = al_play_sample(sample, 1, 0, 1, ALLEGRO_PLAYMODE_LOOP, NULL);
+// 	cout << "Sample " << (played ? "" : "not ") << "played." << endl;
+// }
+
+Configuration config = Configuration({
+	1,
+	60,
+	256,
+	224,
+	7.0,
+	6.0
+});
 
 int main(int argc, char **args)
 {
-	al_init();
-
-	al_init_image_addon();
-	al_init_primitives_addon();
-	al_install_audio();
-
-	al_reserve_samples(1);
+	cout << "Here" << endl;
+	Game game = Game(config);
 
 	// thread(playSong).join();
 
 	bool escapePressed = false;
-	Keyboard keyboard;
-	keyboard.subscribe(
-		Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
-		[&escapePressed](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-			escapePressed = true;
-		});
+	// Keyboard keyboard;
+	// keyboard.subscribe(
+	// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
+	// 	[&escapePressed](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+	// 		escapePressed = true;
+	// 	});
 
-	class N : public Subdata {};
-	Node root = Node(std::shared_ptr<N>(new N()));
-
-	root.setPositionInParent(0, 0);
-	root.setCenterOfRotation(128, 112);
-
-	Node last = root;
-	shared_ptr<ThreadWork> w = shared_ptr<ThreadWork>(new ThreadWork());
+	Node last = game.rootNode;
+	
 	std::srand(time(NULL));
 	for (int i = 0; i < 1; i++)
 	{
-		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Down.png", 3, 1, 10)));
+		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/test-animation.png", 8, 2, 8)));
 		newNode.setPositionInParent(0 + 32 * (i % 8), 0 + 40 * (i / 8));
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);
-		root.addChild(newNode);
+		game.rootNode.addChild(newNode);
 
 		auto *motionVector = new Coordinates();
 		(*motionVector).x = 0;
@@ -84,72 +83,72 @@ int main(int argc, char **args)
 				}
 				return;
 			});
-		w->innerQueue.push(p);
+		// w->innerQueue.push(p);
 
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_W, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y -= 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_W, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y += 1;
-			});
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_W, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).y -= 1;
+		// 	});
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_W, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).y += 1;
+		// 	});
 
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_S, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y += 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_S, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).y -= 1;
-			});
-		///////
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_D, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x += 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_D, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x -= 1;
-			});
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_S, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).y += 1;
+		// 	});
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_S, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).y -= 1;
+		// 	});
+		// ///////
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_D, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).x += 1;
+		// 	});
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_D, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).x -= 1;
+		// 	});
 
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_A, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x -= 1;
-			});
-		keyboard.subscribe(
-			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_A, 0,
-			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-				(*motionVector).x += 1;
-			});
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_A, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).x -= 1;
+		// 	});
+		// keyboard.subscribe(
+		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_A, 0,
+		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+		// 		(*motionVector).x += 1;
+		// 	});
 
 		last = newNode;
 	}
 
 
 	// std::cout << "Size: " << w->second.size() << endl;
-	Process p1(
-		[root](double passedTime, ThreadWorker worker) {
-			// cout << "Here 1" << endl;
-			return;
-		});
-	w->push(p1);
-	Process p2(
-		[root](double passedTime, ThreadWorker worker) {
-			// cout << "Here 2" << endl;
-			return;
-		});
-	w->push(p2);
-	ThreadWorker worker1(w, 1s / 120.00), worker2(w, 1s / 2);
-	worker1.take_off_standby();
-	worker2.take_off_standby();
+	// Process p1(
+	// 	[root](double passedTime, ThreadWorker worker) {
+	// 		// cout << "Here 1" << endl;
+	// 		return;
+	// 	});
+	// w->push(p1);
+	// Process p2(
+	// 	[root](double passedTime, ThreadWorker worker) {
+	// 		// cout << "Here 2" << endl;
+	// 		return;
+	// 	});
+	// w->push(p2);
+	// ThreadWorker worker1(w, 1s / 120.00), worker2(w, 1s / 2);
+	// worker1.take_off_standby();
+	// worker2.take_off_standby();
 
 
 	const int i = 256;
@@ -161,9 +160,9 @@ int main(int argc, char **args)
 	// cam.toggleAnchor(true);
 
 	// for (int j = 0; j < i; j++)
-	while (!escapePressed)
-	{
-		cam.drawToScreen(root);
+	// while (!escapePressed)
+	// {
+	// 	cam.drawToScreen(root);
 
 		// last.move(-2, 0);
 		// if (j < i / 4)
@@ -182,12 +181,12 @@ int main(int argc, char **args)
 		// {
 		// 	cam.zoomIn(-0.01);
 		// }
-	}
-	double total = chrono::duration_cast<chrono::duration<double>>(
-					   chrono::high_resolution_clock::now() - before)
-					   .count();
+	// }
+	// double total = chrono::duration_cast<chrono::duration<double>>(
+	// 				   chrono::high_resolution_clock::now() - before)
+	// 				   .count();
 
-	std::cout << "Average Framerate: " << i / total << endl;
+	// std::cout << "Average Framerate: " << i / total << endl;
 
 	// usleep(10000000);
 
