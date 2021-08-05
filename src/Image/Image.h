@@ -27,6 +27,10 @@ namespace Esperatto {
 			} catch (out_of_range e) {
 				data = shared_ptr<imageData>(new imageData());
 				data->internal = al_load_bitmap(path.c_str());
+				if(data->internal == nullptr){
+					throw "Could not load image file -- TODO: Standardize errors.";
+				}
+
 				data->referenceCount = 1;
 				/*
 					For some reason, locking the bitmap makes it slower.
