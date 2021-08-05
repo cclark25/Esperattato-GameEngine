@@ -18,7 +18,7 @@ $(OUT_DIR)/Game.o:  $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
 
 test: ./BUILD/Esperattato.o
-	$(CXX) $(CXXFLAGS) $(libxmFLAGS) $(FILENAME) BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) "$(FILENAME)" BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
 basic-collision-square-test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) src/PixelCollision/v2/basic-collision-square-test.cpp BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread

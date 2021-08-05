@@ -4,6 +4,7 @@
 #include "../Node/NodeSubTypes.h"
 #include "../ThreadWorker/ThreadWorker.h"
 #include "../Camera/Camera.h"
+#include "../Keyboard/Keyboard.h"
 #include <vector>
 
 namespace _Esperatto {
@@ -51,6 +52,7 @@ namespace Esperatto {
 		    shared_ptr<ThreadWork>(new ThreadWork());
 		Esperatto::Screen display;
 		Camera camera;
+		Keyboard keyboard;
 
 		Game(Configuration &config);
 		void StartGame();

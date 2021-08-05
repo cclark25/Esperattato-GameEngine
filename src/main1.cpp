@@ -2,7 +2,7 @@
 #include "Animation/Animation.h"
 // #include "Camera/Camera.h"
 // #include "Image/Image.h"
-// #include "Keyboard/Keyboard.h"
+#include "Keyboard/Keyboard.h"
 // #include "Node/Node.h"
 // #include "Process/Process.h"
 // #include "Screen/Screen.h"
@@ -48,20 +48,18 @@ int main(int argc, char **args)
 
 	// thread(playSong).join();
 
-	bool escapePressed = false;
-	// Keyboard keyboard;
-	// keyboard.subscribe(
-	// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
-	// 	[&escapePressed](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-	// 		escapePressed = true;
-	// 	});
+	game.keyboard.subscribe(
+		Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_ESCAPE, 0,
+		[&game](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+			game.StopGame();
+		});
 
 	Node last = game.rootNode;
 	
 	std::srand(time(NULL));
 	for (int i = 0; i < 1; i++)
 	{
-		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/test-animation.png", 8, 2, 8)));
+		Node newNode(shared_ptr<Animation>(new Animation("src/Test_Files/test-animation.png", 8, 1, 8)));
 		newNode.setPositionInParent(0 + 32 * (i % 8), 0 + 40 * (i / 8));
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);
@@ -83,51 +81,52 @@ int main(int argc, char **args)
 				}
 				return;
 			});
+		game.threadWork->innerQueue.push(p);
 		// w->innerQueue.push(p);
 
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_W, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).y -= 1;
-		// 	});
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_W, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).y += 1;
-		// 	});
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_W, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).y -= 1;
+			});
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_W, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).y += 1;
+			});
 
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_S, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).y += 1;
-		// 	});
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_S, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).y -= 1;
-		// 	});
-		// ///////
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_D, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).x += 1;
-		// 	});
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_D, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).x -= 1;
-		// 	});
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_S, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).y += 1;
+			});
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_S, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).y -= 1;
+			});
+		///////
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_D, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).x += 1;
+			});
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_D, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).x -= 1;
+			});
 
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_A, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).x -= 1;
-		// 	});
-		// keyboard.subscribe(
-		// 	Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_A, 0,
-		// 	[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
-		// 		(*motionVector).x += 1;
-		// 	});
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_DOWN, ALLEGRO_KEY_A, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).x -= 1;
+			});
+		game.keyboard.subscribe(
+			Keyboard::KEY_EVENTS::KEY_UP, ALLEGRO_KEY_A, 0,
+			[&newNode, motionVector](Keyboard::KEY_EVENTS e, unsigned int keycode, unsigned int keymod) {
+				(*motionVector).x += 1;
+			});
 
 		last = newNode;
 	}
@@ -151,12 +150,7 @@ int main(int argc, char **args)
 	// worker2.take_off_standby();
 
 
-	const int i = 256;
-	Esperatto::Screen d(256, 224, 360);
-	d.setFullscreen(true);
-	d.setPixelStretch(7.0 / 6.0, 1);
-	Camera cam(d);
-	auto before = chrono::high_resolution_clock::now();
+	
 	// cam.toggleAnchor(true);
 
 	// for (int j = 0; j < i; j++)
@@ -190,7 +184,13 @@ int main(int argc, char **args)
 
 	// usleep(10000000);
 
-	al_uninstall_audio();
+	Process cameraMan = Process([&game](double passedTime, ThreadWorker worker){
+		game.camera.move(-10,0);
+		return;
+	});
+	game.threadWork->innerQueue.push(cameraMan);
+
+	game.StartGame();
 
 	return 0;
 }

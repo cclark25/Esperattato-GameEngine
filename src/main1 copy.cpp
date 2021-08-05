@@ -62,7 +62,7 @@ int main(int argc, char **args)
 	std::srand(time(NULL));
 	for (int i = 0; i < 1; i++)
 	{
-		Node newNode(shared_ptr<Animation>(new Animation("./Test_Files/Down.png", 3, 1, 10)));
+		Node newNode(shared_ptr<Animation>(new Animation("src/Test_Files/test-animation.png", 3, 1, 10)));
 		newNode.setPositionInParent(0 + 32 * (i % 8), 0 + 40 * (i / 8));
 		newNode.setZIndexInParent(0.01);
 		newNode.setCenterOfRotation(0, 0);

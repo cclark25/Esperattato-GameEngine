@@ -8,7 +8,8 @@ namespace Esperatto {
 	Game::Game(Configuration &config)
 	    : display(config.screenWidth, config.screenHeight,
 	              config.framesPerSecond),
-	      camera(this->display) {
+	      camera(this->display), 
+		  keyboard() {
 		this->config = config;
 		for (unsigned int i = 0; i < this->config.workerCount; i++) {
 			this->workers.push_back(ThreadWorker(

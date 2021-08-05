@@ -40,7 +40,7 @@ int main() {
 	Game game = Game(config);
 
 	auto y =
-	    Node(std::shared_ptr<Image>(new Image("../../../Test_Files/Down.png")));
+	    Node(std::shared_ptr<Animation>(new Animation("src/Test_Files/test-animation.png", 8, 1, 8)));
 	game.rootNode.addChild(y);
 
 	y.setZIndexInParent(0.01);
