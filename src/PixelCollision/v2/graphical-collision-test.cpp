@@ -1,9 +1,5 @@
-#include "../core/Game.h"
+#include "../../core/Game.h"
 #include "cmath"
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_primitives.h>
 #include <chrono>
 #include <cmath>
 #include <functional>
@@ -30,66 +26,85 @@ int main()
 
 	double velocityBasis = 50;
 
-	auto y =
-		Node(std::shared_ptr<Animation>(new Animation("src/Test_Files/test-animation.png", 8, 1, 8)));
-	game.rootNode.addChild(y);
+	Node first = Node(make_shared<CollisionSquare>(
+		Coordinates({0, 0}), Coordinates({50, 50}), true));
+	Node second = Node(make_shared<CollisionSquare>(
+		Coordinates({0, 0}), Coordinates({50, 50}), true));
+	auto firstSquare = *((CollisionSquare *)first.getDataPtr().get());
+	auto secondSquare = *((CollisionSquare *)second.getDataPtr().get());
+
+	auto a =
+		Node(std::shared_ptr<Image>(new Image("src/Test_Files/green-box.png")));
+	auto b =
+		Node(std::shared_ptr<Image>(new Image("src/Test_Files/red-box.png")));
+	first.addChild(a);
+	second.addChild(b);
+	game.rootNode.addChild(first);
+	game.rootNode.addChild(second);
+
+	first.setPositionInParent(0,0);
+	second.setPositionInParent(100,100);
 
 	Physics physics;
-	Process mover = Process([&y, &physics](double time, ThreadWorker worker)
+	Process mover = Process([&first, &physics, &firstSquare, &secondSquare](double time, ThreadWorker worker)
 							{
 								Coordinates direction = physics.getDifference();
-								y.setPositionInParent(direction.x,direction.y);
+								first.setPositionInParent(direction.x, direction.y);
+								if(firstSquare.Intersects(secondSquare)){
+									physics.setX(0);
+									physics.setY(0);
+								}
 							});
 
 	game.threadWork->innerQueue.push(mover);
 
-	KeySubscription up = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+	KeySubscription up = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														unsigned int keymodFlags)
 						  {
 							  physics.addYVelocity(-velocityBasis);
 						  },
-						  [&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+						  [&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														unsigned int keymodFlags)
 						  {
 							  physics.addYVelocity(velocityBasis);
 						  }};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_W, 0, up);
-	KeySubscription down = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+	KeySubscription down = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														  unsigned int keymodFlags)
 							{
 								physics.addYVelocity(velocityBasis);
 							},
-							[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+							[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														  unsigned int keymodFlags)
 							{
 								physics.addYVelocity(-velocityBasis);
 							}};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_S, 0, down);
-	KeySubscription right = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+	KeySubscription right = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														   unsigned int keymodFlags)
 							 {
 								 physics.addXVelocity(velocityBasis);
 							 },
-							 [&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+							 [&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														   unsigned int keymodFlags)
 							 {
 								 physics.addXVelocity(-velocityBasis);
 							 }};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_D, 0, right);
-	KeySubscription left = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+	KeySubscription left = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														  unsigned int keymodFlags)
 							{
 								physics.addXVelocity(-velocityBasis);
 							},
-							[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+							[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 														  unsigned int keymodFlags)
 							{
 								physics.addXVelocity(velocityBasis);
 							}};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_A, 0, left);
 
-	y.setZIndexInParent(0.01);
-	y.setPositionInParent(0, 0);
+	first.setZIndexInParent(0.01);
+	first.setPositionInParent(0, 0);
 
 	game.rootNode.setPositionInParent(0, 0);
 	game.camera.setPosition(0, 0);

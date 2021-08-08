@@ -19,6 +19,11 @@
 #include "../XM/XM.h"
 #include "../core/Game.h"
 #include "../Physics/headers/Physics.h"
+#include "../PixelCollision/v2/collisionSquare.h"
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_primitives.h>
 #include <vector>
 
 namespace _Esperatto {
