@@ -62,7 +62,7 @@ void Keyboard::cycleEvents()
 					for (auto callback : k)
 					{
 						callback(
-							(Keyboard::KEY_EVENTS)currentEvent.type,
+							(KEY_EVENTS)currentEvent.type,
 							(unsigned int)currentEvent.keyboard.keycode,
 							(unsigned int)currentEvent.keyboard.modifiers);
 					}
@@ -121,5 +121,11 @@ void Keyboard::subscribe(KEY_EVENTS e, unsigned int keycode,
 
 	(*eventIt).second.push_back(callback);
 }
+
+void Keyboard::subscribeToggle(unsigned int keycode,
+							 unsigned int keymodFlags, KeySubscription &subscription){
+								 this->subscribe(KEY_EVENTS::KEY_DOWN, keycode, keymodFlags, subscription.keyPressed);
+								 this->subscribe(KEY_EVENTS::KEY_UP, keycode, keymodFlags, subscription.keyReleased);
+							 }
 
 } // namespace Esperatto

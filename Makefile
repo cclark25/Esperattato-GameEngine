@@ -11,7 +11,7 @@ OUT_DIR=./BUILD/object_files
 $(OUT_DIR)/Game.o:  $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o $(OUT_DIR)/collisionSquare.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) -c ./src/core/Game.cpp -o "$(OUT_DIR)/Game.o" -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -fPIC
 
-./BUILD/Esperattato.o: $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o $(OUT_DIR)/collisionSquare.o $(OUT_DIR)/Game.o 
+./BUILD/Esperattato.o: $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $(OUT_DIR)/Node.o $(OUT_DIR)/NodeSubTypes.o $(OUT_DIR)/Camera.o $(OUT_DIR)/ThreadWorker.o $(OUT_DIR)/Process.o $(OUT_DIR)/Keyboard.o $(OUT_DIR)/PixelCollision.o $(OUT_DIR)/CollisionTree.o $(OUT_DIR)/collisionSquare.o $(OUT_DIR)/Game.o $(OUT_DIR)/Physics.o
 	g++ $(CXXFLAGS) $(libxmFLAGS) $(OUT_DIR)/libxm/*.o $(OUT_DIR)/*.o -shared -o ./BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -fPIC
 
 # $(DEPENDENCIES):
@@ -30,6 +30,9 @@ graphical-collision-square-test: ./BUILD/Esperattato.o
 
 $(OUT_DIR)/Animation.o: ./src/Animation/Animation.h ./src/Animation/Animation.cpp ./src/Image/Image.h
 	$(CXX) $(CXXFLAGS) -c ./src/Animation/Animation.cpp -fPIC -o "$(OUT_DIR)/Animation.o"
+
+$(OUT_DIR)/Physics.o: ./src/Physics/headers/Physics.h ./src/Physics/Physics.cpp 
+	$(CXX) $(CXXFLAGS) -c ./src/Physics/Physics.cpp -fPIC -o "$(OUT_DIR)/Physics.o"
 
 $(OUT_DIR)/Screen.o:  ./src/Screen/Screen.cpp ./src/Screen/Screen.h
 	$(CXX) $(CXXFLAGS)  -c ./src/Screen/Screen.cpp -fPIC -o "$(OUT_DIR)/Screen.o"
