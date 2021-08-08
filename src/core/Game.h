@@ -5,6 +5,20 @@
 #include "../ThreadWorker/ThreadWorker.h"
 #include "../Camera/Camera.h"
 #include "../Keyboard/Keyboard.h"
+#include "../Animation/Animation.h"
+#include "../Camera/Camera.h"
+#include "../Image/Image.h"
+#include "../Keyboard/Keyboard.h"
+#include "../Node/Node.h"
+#include "../PixelCollision/CollisionTree.h"
+#include "../PixelCollision/PixelCollision.h"
+#include "../Process/Process.h"
+#include "../Screen/Screen.h"
+#include "../ThreadWorker/ThreadWorker.h"
+#include "../Types.h"
+#include "../XM/XM.h"
+#include "../core/Game.h"
+#include "../Physics/headers/Physics.h"
 #include <vector>
 
 namespace _Esperatto {

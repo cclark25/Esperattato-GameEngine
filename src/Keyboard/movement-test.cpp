@@ -1,17 +1,4 @@
-#include "../../Animation/Animation.h"
-#include "../../Camera/Camera.h"
-#include "../../Image/Image.h"
-#include "../../Keyboard/Keyboard.h"
-#include "../../Node/Node.h"
-#include "../../PixelCollision/CollisionTree.h"
-#include "../../PixelCollision/PixelCollision.h"
-#include "../../Process/Process.h"
-#include "../../Screen/Screen.h"
-#include "../../ThreadWorker/ThreadWorker.h"
-#include "../../Types.h"
-#include "../../XM/XM.h"
-#include "../../core/Game.h"
-#include "../../Physics/headers/Physics.h"
+#include "../core/Game.h"
 #include "cmath"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
@@ -51,70 +38,63 @@ int main()
 	Process mover = Process([&y, &physics](double time, ThreadWorker worker)
 							{
 								Coordinates direction = physics.getDifference();
-								y.move(direction.x, direction.y);
+								y.setPositionInParent(direction.x,direction.y);
 							});
 
 	game.threadWork->innerQueue.push(mover);
 
 	KeySubscription up = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
+														unsigned int keymodFlags)
 						  {
-							  physics.yVelocity += -velocityBasis;
+							  physics.addYVelocity(-velocityBasis);
 						  },
 						  [&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
+														unsigned int keymodFlags)
 						  {
-							  physics.yVelocity -= -velocityBasis;
+							  physics.addYVelocity(velocityBasis);
 						  }};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_W, 0, up);
 	KeySubscription down = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
-						  {
-							  physics.yVelocity += velocityBasis;
-						  },
-						  [&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
-						  {
-							  physics.yVelocity -= velocityBasis;
-						  }};
+														  unsigned int keymodFlags)
+							{
+								physics.addYVelocity(velocityBasis);
+							},
+							[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+														  unsigned int keymodFlags)
+							{
+								physics.addYVelocity(-velocityBasis);
+							}};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_S, 0, down);
 	KeySubscription right = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
-						  {
-							  physics.xVelocity += velocityBasis;
-						  },
-						  [&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
-						  {
-							  physics.xVelocity -= velocityBasis;
-						  }};
+														   unsigned int keymodFlags)
+							 {
+								 physics.addXVelocity(velocityBasis);
+							 },
+							 [&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+														   unsigned int keymodFlags)
+							 {
+								 physics.addXVelocity(-velocityBasis);
+							 }};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_D, 0, right);
 	KeySubscription left = {[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
-						  {
-							  physics.xVelocity += -velocityBasis;
-						  },
-						  [&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-										 unsigned int keymodFlags)
-						  {
-							  physics.xVelocity -= -velocityBasis;
-						  }};
+														  unsigned int keymodFlags)
+							{
+								physics.addXVelocity(-velocityBasis);
+							},
+							[&y, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+														  unsigned int keymodFlags)
+							{
+								physics.addXVelocity(velocityBasis);
+							}};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_A, 0, left);
 
-	
 	y.setZIndexInParent(0.01);
 	y.setPositionInParent(0, 0);
 
 	game.rootNode.setPositionInParent(0, 0);
 	game.camera.setPosition(0, 0);
 
-	// game.StartGame();
-
-	auto changeOfAccel = RateOfChange(10);
-	auto acceleration = RateOfChange(changeOfAccel);
-	RateOfChange velocity(acceleration);
-
-	cout << "Value: " << velocity.getResult(1) << endl;
+	game.StartGame();
 
 	return 0;
 }

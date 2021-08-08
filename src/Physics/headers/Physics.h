@@ -4,31 +4,35 @@
 
 namespace Esperatto
 {
-    class RateOfChange
-    {
-    private:
-        shared_ptr<RateOfChange> dynamicRateOfChange;
-        double flatRateOfChange;
-
-    public:
-        RateOfChange(double rateOfChange);
-        RateOfChange(RateOfChange &rateOfChange);
-        function<double(double time)> integrate(int startingPower = 0);
-        double getResult(double time);
-    };
 
     class Physics
     {
-    private:
-        double lastTimestamp;
+        double timeStampOfLastChange;
 
+        double initialX = 0;
+        double initialY = 0;
+        double initialXVelocity = 0;
+        double initialYVelocity = 0;
+        double initialXAcceleration = 0;
+        double initialYAcceleration = 0;
+
+        void takeSnapshot();
     public:
-        double xVelocity = 0;
-        double yVelocity = 0;
-        double xAcceleration = 0;
-        double yAcceleration = 0;
         Physics();
         Coordinates getDifference();
+        void setX(double value);
+        void setY(double value);
+        void setXVelocity(double value);
+        void setYVelocity(double value);
+        void setXAcceleration(double value);
+        void setYAcceleration(double value);
+
+        void addX(double value);
+        void addY(double value);
+        void addXVelocity(double value);
+        void addYVelocity(double value);
+        void addXAcceleration(double value);
+        void addYAcceleration(double value);
     };
 }
 

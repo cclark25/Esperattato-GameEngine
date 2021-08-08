@@ -4,63 +4,87 @@
 
 namespace Esperatto
 {
-    RateOfChange::RateOfChange(double rateOfChange)
-    {
-        this->flatRateOfChange = rateOfChange;
-    }
-    RateOfChange::RateOfChange(RateOfChange &rate)
-    {
-        if (rate.dynamicRateOfChange == nullptr)
-        {
-            this->dynamicRateOfChange = shared_ptr<RateOfChange>(new RateOfChange(rate.flatRateOfChange));
-        }
-        else
-        {
-            this->dynamicRateOfChange = make_shared<RateOfChange>(rate.flatRateOfChange);
-        }
-    }
-
-    function<double(double time)> RateOfChange::integrate(int startingPower = 0)
-    {
-        double &flatRateOfChange = this->flatRateOfChange;
-        shared_ptr<RateOfChange> dynamicRateOfChange = this->dynamicRateOfChange;
-
-        return [&flatRateOfChange, dynamicRateOfChange, startingPower](double time)
-        {
-            if (dynamicRateOfChange == nullptr)
-            {
-                return flatRateOfChange * time;
-            }
-            else
-            {
-                return dynamicRateOfChange->integrate(startingPower + 1)(time) * time / (startingPower);
-            }
-        };
-    }
-
-    double RateOfChange::getResult(double time)
-    {
-        if (this->dynamicRateOfChange == nullptr)
-        {
-            return this->flatRateOfChange * time;
-        }
-        else
-        {
-            return this->dynamicRateOfChange->getResult(time) * (time) / 2;
-        }
-    }
-
     Physics::Physics()
     {
-        this->lastTimestamp = al_get_time();
+        this->timeStampOfLastChange = al_get_time();
     };
 
     Coordinates Physics::getDifference()
     {
-        double currentTimestamp = al_get_time();
-        double timeDifference = currentTimestamp - this->lastTimestamp;
-        this->lastTimestamp = currentTimestamp;
+        double currentTime = al_get_time();
+        double timePeriod = currentTime - this->timeStampOfLastChange;
 
-        return {this->xVelocity * timeDifference, this->yVelocity * timeDifference};
+        return {
+            initialX + initialXVelocity * timePeriod + initialXAcceleration * (timePeriod * timePeriod) / 2,
+            initialY + initialYVelocity * timePeriod + initialYAcceleration * (timePeriod * timePeriod) / 2};
+    }
+
+    void Physics::takeSnapshot()
+    {
+        double currentTime = al_get_time();
+        double timePeriod = currentTime - this->timeStampOfLastChange;
+        this->timeStampOfLastChange = currentTime;
+
+        this->initialX = initialX + initialXVelocity * timePeriod + initialXAcceleration * (timePeriod * timePeriod) / 2;
+        this->initialY = initialY + initialYVelocity * timePeriod + initialYAcceleration * (timePeriod * timePeriod) / 2;
+
+        this->initialXVelocity = initialXVelocity + initialXAcceleration * timePeriod;
+        this->initialYVelocity = initialYVelocity + initialYAcceleration * timePeriod;
+    }
+
+    void Physics::setX(double value)
+    {
+        this->takeSnapshot();
+        this->initialX = value;
+    }
+    void Physics::setY(double value)
+    {
+        this->takeSnapshot();
+        this->initialY = value;
+    }
+    void Physics::setXVelocity(double value)
+    {
+        this->takeSnapshot();
+        this->initialXVelocity = value;
+    }
+    void Physics::setYVelocity(double value)
+    {
+        this->takeSnapshot();
+        this->initialYVelocity = value;
+    }
+    void Physics::setXAcceleration(double value)
+    {
+        this->takeSnapshot();
+        this->initialXAcceleration = value;
+    }
+    void Physics::setYAcceleration(double value)
+    {
+        this->takeSnapshot();
+        this->initialYAcceleration = value;
+    }
+
+    void Physics::addX(double value){
+        this->takeSnapshot();
+        this->initialX += value;
+    }
+    void Physics::addY(double value){
+        this->takeSnapshot();
+        this->initialY += value;
+    }
+    void Physics::addXVelocity(double value){
+        this->takeSnapshot();
+        this->initialXVelocity += value;
+    }
+    void Physics::addYVelocity(double value){
+        this->takeSnapshot();
+        this->initialYVelocity += value;
+    }
+    void Physics::addXAcceleration(double value){
+        this->takeSnapshot();
+        this->initialXAcceleration += value;
+    }
+    void Physics::addYAcceleration(double value){
+        this->takeSnapshot();
+        this->initialYAcceleration += value;
     }
 }
