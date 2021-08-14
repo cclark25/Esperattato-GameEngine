@@ -38,9 +38,9 @@ namespace Esperatto
 
 		typedef map<KEY_EVENTS, callbackList> eventList;
 
-		typedef map<unsigned int, eventList *> flagList;
+		typedef map<unsigned int, eventList> flagList;
 
-		typedef map<unsigned int, flagList *> keycodeList;
+		typedef map<unsigned int, flagList> keycodeList;
 
 		struct foreign_data
 		{
