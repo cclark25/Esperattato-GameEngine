@@ -88,7 +88,7 @@ int main()
 	y.setPositionInParent(0, 0);
 
 	game.rootNode.setPositionInParent(0, 0);
-	game.camera.setPosition(0, 0);
+	game.camera.setPositionInParent(0, 0);
 
 	game.StartGame();
 

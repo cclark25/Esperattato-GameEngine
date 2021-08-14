@@ -15,6 +15,9 @@ namespace Esperatto {
 			this->workers.push_back(ThreadWorker(
 			    this->threadWork, (1.00s / this->config.framesPerSecond)));
 		}
+		camera.setCanvasSize(config.screenWidth, config.screenHeight);
+		camera.setCanvasColor(config.canvasColor);
+		rootNode.addChild(camera);
 	}
 
 	void Game::StartGame() {
@@ -43,4 +46,5 @@ namespace Esperatto {
 	}
 
 	void Game::StopGame() { this->shouldStop = true; }
+
 } // namespace Esperatto

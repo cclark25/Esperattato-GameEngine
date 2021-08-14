@@ -58,6 +58,8 @@ namespace Esperatto {
 		 */
 		double screenPixelStretchX;
 		double screenPixelStretchY;
+
+		ALLEGRO_COLOR canvasColor; 
 	};
 	class Game {
 	  private:

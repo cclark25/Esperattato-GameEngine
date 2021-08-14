@@ -48,12 +48,22 @@ namespace Esperatto {
 				    },
 				    data, typeid(T).hash_code());
 			}
+			foreign_data(){
+				
+				this->subdata = make_shared<NodeSubtype>(
+				    [](shared_ptr<void> toDelete) {
+					    // delete (shared_ptr<T>)(toDelete);
+				    },
+				    nullptr, typeid(void).hash_code());
+			}
 		};
 		shared_ptr<foreign_data> data;
 
 		Transform getTransform();
 
 	  public:
+		Node();
+
 		template <typename T, typename = enable_if_t<is_base_of_v<Subdata, T>>>
 		Node(shared_ptr<T> d) {
 			this->data = make_shared<foreign_data>(d);

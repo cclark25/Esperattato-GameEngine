@@ -18,6 +18,7 @@ namespace Esperatto {
 		double x1, x2, x3, x4;
 		double y1, y2, y3, y4;
 
+
 		x1 = this->first.x;
 		x2 = this->second.x;
 		x3 = otherSquare.first.x;
@@ -44,23 +45,21 @@ namespace Esperatto {
 			y4 += parentTransform.y;
 		}
 
-		/*
-		        std::cout << "Root First Coords: " + Coordinates({x1,
-		   y1}).toString()
-		                  << std::endl;
+		//         std::cout << "Root First Coords: " + Coordinates({x1,
+		//    y1}).toString()
+		//                   << std::endl;
 
-		        std::cout << "Root Second Coords: " + Coordinates({x2,
-		   y2}).toString()
-		                  << std::endl;
+		//         std::cout << "Root Second Coords: " + Coordinates({x2,
+		//    y2}).toString()
+		//                   << std::endl;
 
-		        std::cout << "Other First Coords: " + Coordinates({x3,
-		   y3}).toString()
-		                  << std::endl;
+		//         std::cout << "Other First Coords: " + Coordinates({x3,
+		//    y3}).toString()
+		//                   << std::endl;
 
-		        std::cout << "Other Second Coords: " + Coordinates({x4,
-		   y4}).toString()
-		                  << std::endl;
-		*/
+		//         std::cout << "Other Second Coords: " + Coordinates({x4,
+		//    y4}).toString()
+		//                   << std::endl;
 
 		bool xOverlap = overlaps(x1, x2, x3, x4);
 		bool yOverlap = overlaps(y1, y2, y3, y4);

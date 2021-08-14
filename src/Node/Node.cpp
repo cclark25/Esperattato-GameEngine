@@ -8,6 +8,11 @@ namespace Esperatto {
 		return "{" + to_string(this->x) + "," + to_string(this->y) + "}";
 	}
 
+	Node::Node(){
+		this->data = make_shared<foreign_data>();
+		this->data->referenceCount = 1;
+	}
+
 	Node::Node(const Node &original){ //: data(original.data) {
 		data = original.data;
 		data->referenceCount++;
@@ -193,10 +198,10 @@ namespace Esperatto {
 		al_translate_transform(
 		    &thisTransform,
 		    this->data->xPosition - this->data->xCenterOfRotation,
-		    this->data->yPosition - this->data->yCenterOfRotation);
+		    -(this->data->yPosition - this->data->yCenterOfRotation));
 		al_rotate_transform(&thisTransform, this->data->rotationRadians);
 		al_translate_transform(&thisTransform, this->data->xCenterOfRotation,
-		                       this->data->yCenterOfRotation);
+		                       -this->data->yCenterOfRotation);
 		al_scale_transform(&thisTransform, this->data->xScale,
 		                   this->data->yScale);
 

@@ -6,14 +6,9 @@
 #include <thread>
 
 namespace Esperatto {
-	class Camera {
+	class Camera : public Node {
 	  private:
 		struct cameraData {
-			double xPosition = 0;
-			double yPosition = 0;
-			double xCenterOfRotation = 0;
-			double yCenterOfRotation = 0;
-			double rotationRadians = 0;
 			double zoom = 1;
 			int width = 256;
 			int height = 224;
@@ -21,6 +16,7 @@ namespace Esperatto {
 			unsigned int referenceCount = 0;
 			Bitmap canvas;
 			Screen *screen;
+			ALLEGRO_COLOR canvasColor = al_map_rgb(128, 128, 128);
 		};
 		std::shared_ptr<cameraData> data;
 
@@ -31,24 +27,16 @@ namespace Esperatto {
 
 		void drawToScreen(Node rootNode);
 
-		void move(double x, double y);
-		void rotate(double radians);
 		void zoomIn(double zoom);
 
 		void setCanvasSize(int width, int height);
+		void setCanvasColor(ALLEGRO_COLOR color);
 		int getCanvasWidth();
 		int getCanvasHeight();
-		void setPosition(double x, double y);
-		Coordinates getPosition();
-		void setRotation(double radians);
-		double getRotation();
 		double getZoom();
 		void setZoom(double zoom);
 		void toggleAnchor();
 		void toggleAnchor(bool enable);
-
-		Coordinates getCenterOfRotation();
-		void setCenterOfRotation(double x, double y);
 
 		bool shouldDraw(Transform &t, Bitmap bitmap,
 		                        float destination_x, float destination_y);

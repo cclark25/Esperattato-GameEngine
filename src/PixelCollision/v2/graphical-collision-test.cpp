@@ -16,7 +16,7 @@ Configuration config = Configuration({1,
 									  256,
 									  224,
 									  7.0,
-									  6.0});
+									  6.0, al_map_rgb(128, 128, 128)});
 
 int main()
 {
@@ -39,65 +39,77 @@ int main()
 		Node(std::shared_ptr<Image>(new Image("src/Test_Files/red-box.png")));
 	first.addChild(a);
 	second.addChild(b);
-	game.rootNode.addChild(first);
+	game.camera.addChild(first);
 	game.rootNode.addChild(second);
 
-	first.setPositionInParent(0,0);
-	second.setPositionInParent(100,100);
+	first.setPositionInParent(0, 0);
+	second.setPositionInParent(100, -100);
 
 	Physics physics;
 	Process mover = Process([&first, &physics, &firstSquare, &secondSquare](double time, ThreadWorker worker)
 							{
 								Coordinates direction = physics.getDifference();
+								auto previousPosition = first.getPositionInParent();
 								first.setPositionInParent(direction.x, direction.y);
-								if(firstSquare.Intersects(secondSquare)){
-									physics.setX(0);
-									physics.setY(0);
+								if (firstSquare.Intersects(secondSquare))
+								{
+									physics.setX(previousPosition.x);
+									physics.setY(previousPosition.y);
+									first.setPositionInParent(previousPosition.x, previousPosition.y);
 								}
 							});
 
+	Physics cameraPhysics;
+	Process cameraMover = Process([&game, &cameraPhysics, &firstSquare, &secondSquare](double time, ThreadWorker worker)
+								  {
+									  Coordinates direction = cameraPhysics.getDifference();
+									  game.camera.setPositionInParent(direction.x, direction.y);
+								  });
+	cameraPhysics.setYVelocity(-velocityBasis / 2);
+
 	game.threadWork->innerQueue.push(mover);
+	game.threadWork->innerQueue.push(cameraMover);
 
 	KeySubscription up = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														unsigned int keymodFlags)
-						  {
-							  physics.addYVelocity(-velocityBasis);
-						  },
-						  [&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														unsigned int keymodFlags)
+															unsigned int keymodFlags)
 						  {
 							  physics.addYVelocity(velocityBasis);
+						  },
+						  [&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+															unsigned int keymodFlags)
+						  {
+							  physics.addYVelocity(-velocityBasis);
 						  }};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_W, 0, up);
 	KeySubscription down = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														  unsigned int keymodFlags)
-							{
-								physics.addYVelocity(velocityBasis);
-							},
-							[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														  unsigned int keymodFlags)
+															  unsigned int keymodFlags)
 							{
 								physics.addYVelocity(-velocityBasis);
+							},
+							[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+															  unsigned int keymodFlags)
+							{
+								physics.addYVelocity(velocityBasis);
 							}};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_S, 0, down);
 	KeySubscription right = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														   unsigned int keymodFlags)
+															   unsigned int keymodFlags)
 							 {
 								 physics.addXVelocity(velocityBasis);
 							 },
 							 [&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														   unsigned int keymodFlags)
+															   unsigned int keymodFlags)
 							 {
 								 physics.addXVelocity(-velocityBasis);
 							 }};
 	game.keyboard.subscribeToggle(ALLEGRO_KEY_D, 0, right);
 	KeySubscription left = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														  unsigned int keymodFlags)
+															  unsigned int keymodFlags)
 							{
 								physics.addXVelocity(-velocityBasis);
 							},
 							[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
-														  unsigned int keymodFlags)
+															  unsigned int keymodFlags)
 							{
 								physics.addXVelocity(velocityBasis);
 							}};
@@ -107,7 +119,7 @@ int main()
 	first.setPositionInParent(0, 0);
 
 	game.rootNode.setPositionInParent(0, 0);
-	game.camera.setPosition(0, 0);
+	game.camera.setPositionInParent(0, 0);
 
 	game.StartGame();
 
