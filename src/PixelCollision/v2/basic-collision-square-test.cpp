@@ -27,42 +27,45 @@
 using namespace Esperatto;
 
 void testIntersection(Esperatto::Coordinates a1, Esperatto::Coordinates a2,
-                      Esperatto::Coordinates b1, Esperatto::Coordinates b2,
-                      bool shouldIntersect) {
-	Node first = Node(make_shared<CollisionSquare>(
-	    Coordinates({0, 0}), Coordinates({a2.x - a1.x, a2.y - a1.y}), true));
-	Node second = Node(make_shared<CollisionSquare>(
-	    Coordinates({0, 0}), Coordinates({b2.x - b1.x, b2.y - b1.y}), true));
-	auto firstSquare = *((CollisionSquare *)first.getDataPtr().get());
-	auto secondSquare = *((CollisionSquare *)second.getDataPtr().get());
+					  Esperatto::Coordinates b1, Esperatto::Coordinates b2,
+					  bool shouldIntersect)
+{
+	CollisionSquareNode *first = new CollisionSquareNode(
+		Coordinates({0, 0}), Coordinates({a2.x - a1.x, a2.y - a1.y}), true);
+	CollisionSquareNode *second = new CollisionSquareNode(
+		Coordinates({0, 0}), Coordinates({b2.x - b1.x, b2.y - b1.y}), true);
 
-	first.setPositionInParent(a1.x, a1.y);
-	second.setPositionInParent(b1.x, b1.y);
+	first->setPositionInParent(a1.x, a1.y);
+	second->setPositionInParent(b1.x, b1.y);
 
-	bool intersects = firstSquare.Intersects(secondSquare);
-	bool inverseIntersects = firstSquare.Intersects(secondSquare);
+	bool intersects = first->Intersects(*second);
+	bool inverseIntersects = second->Intersects(*first);
 
-	if (intersects != inverseIntersects) {
+	if (intersects != inverseIntersects)
+	{
 		throw std::logic_error(
-		    "Square ({" + to_string(a1.x) + ", " + to_string(a1.y) + "}, {" +
-		    to_string(a2.x) + ", " + to_string(a2.y) + "})" +
-		    (intersects ? " intersects " : " does not intersect ") + "({" +
-		    to_string(b1.x) + ", " + to_string(b1.y) + "}, {" +
-		    to_string(b2.x) + ", " + to_string(b2.y) +
-		    "}) but not vice-versa.");
+			"Square ({" + to_string(a1.x) + ", " + to_string(a1.y) + "}, {" +
+			to_string(a2.x) + ", " + to_string(a2.y) + "})" +
+			(intersects ? " intersects " : " does not intersect ") + "({" +
+			to_string(b1.x) + ", " + to_string(b1.y) + "}, {" +
+			to_string(b2.x) + ", " + to_string(b2.y) +
+			"}) but not vice-versa.");
 	}
 
-	if (intersects != shouldIntersect) {
+	if (intersects != shouldIntersect)
+	{
 		throw std::logic_error(
-		    "Square ({" + to_string(a1.x) + ", " + to_string(a1.y) + "}, {" +
-		    to_string(a2.x) + ", " + to_string(a2.y) + "}) should" +
-		    (shouldIntersect ? " intersect " : " not intersect ") + "({" +
-		    to_string(b1.x) + ", " + to_string(b1.y) + "}, {" +
-		    to_string(b2.x) + ", " + to_string(b2.y) + "}).");
+			"Square ({" + to_string(a1.x) + ", " + to_string(a1.y) + "}, {" +
+			to_string(a2.x) + ", " + to_string(a2.y) + "}) should" +
+			(shouldIntersect ? " intersect " : " not intersect ") + "({" +
+			to_string(b1.x) + ", " + to_string(b1.y) + "}, {" +
+			to_string(b2.x) + ", " + to_string(b2.y) + "}).");
 	}
+	return;
 }
 
-int main(int argc, char **args) {
+int main(int argc, char **args)
+{
 	al_init();
 
 	al_init_image_addon();

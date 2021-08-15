@@ -1,6 +1,5 @@
 #include "collisionSquare.h"
 #include "../../Node/Node.h"
-#include "../../Node/NodeSubTypes.h"
 
 namespace Esperatto {
 	bool overlaps(double a1, double a2, double b1, double b2);
@@ -84,7 +83,8 @@ namespace Esperatto {
 		return false;
 	}
 
-	void CollisionSquare::declareParent(Node *parent) { this->parent = parent; }
+	void CollisionSquare::declareParent(Node *parent) { 
+		this->parent = parent; }
 
 	bool overlaps(double a1, double a2, double b1, double b2) {
 		if (a1 <= b1) {

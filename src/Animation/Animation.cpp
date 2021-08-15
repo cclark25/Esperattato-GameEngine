@@ -8,7 +8,7 @@ namespace Esperatto
 						 unsigned int rowCount, double framerate)
 		: Image(path)
 	{
-		animData = make_shared<animationData>();
+		animData = shared_ptr<animationData>(new animationData());
 		animData->referenceCount = 1;
 		animData->baseImage = data->internal;
 		const unsigned int colWidth =

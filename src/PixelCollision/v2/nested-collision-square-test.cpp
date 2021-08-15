@@ -29,10 +29,10 @@ using namespace Esperatto;
 void testIntersection(Esperatto::Coordinates a1, Esperatto::Coordinates a2,
                       Esperatto::Coordinates b1, Esperatto::Coordinates b2,
                       bool shouldIntersect) {
-	Node first = Node(make_shared<CollisionSquare>(
-	    Coordinates({0, 0}), Coordinates({a2.x - a1.x, a2.y - a1.y}), true));
-	Node second = Node(make_shared<CollisionSquare>(
-	    Coordinates({0, 0}), Coordinates({b2.x - b1.x, b2.y - b1.y}), true));
+	Node first = Node(shared_ptr<CollisionSquare>(new CollisionSquare(
+	    Coordinates({0, 0}), Coordinates({a2.x - a1.x, a2.y - a1.y}), true)));
+	Node second = Node(shared_ptr<CollisionSquare>(new CollisionSquare(
+	    Coordinates({0, 0}), Coordinates({b2.x - b1.x, b2.y - b1.y}), true)));
 	auto firstSquare = *((CollisionSquare *)first.getDataPtr().get());
 	auto secondSquare = *((CollisionSquare *)second.getDataPtr().get());
 

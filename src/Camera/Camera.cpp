@@ -55,23 +55,11 @@ namespace Esperatto
 			if (this->shouldDraw(node.transformation, 0, 0, 0))
 			{
 				al_use_transform(&node.transformation);
-				Bitmap layer = nullptr;
-				if (node.node.getSubType() == typeid(Image).hash_code())
-				{
-					layer = (*(Image *)node.node.getDataPtr().get()).getBitmap();
-				}
-				else if (node.node.getSubType() ==
-						 typeid(Animation).hash_code())
-				{
-					layer = (*(Animation *)node.node.getDataPtr().get()).getBitmap();
-				}
-				else
-				{
-					// throw bad_exception();
-				}
+				Bitmap layer = node.node->getBitmap();
+				
 				if (layer)
 				{
-					al_draw_bitmap(layer, globalPosition.x, globalPosition.y, 0);
+					al_draw_bitmap(layer, -globalPosition.x, globalPosition.y, 0);
 				}
 			}
 		}
@@ -126,7 +114,7 @@ namespace Esperatto
 							float destination_y)
 	{
 		Coordinates cameraPosition = this->getGlobalPosition();
-		destination_x += cameraPosition.x;
+		destination_x -= cameraPosition.x;
 		destination_y += cameraPosition.y;
 
 		pair<float, float> topLeft = {0, 0};

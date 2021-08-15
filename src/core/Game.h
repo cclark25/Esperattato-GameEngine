@@ -1,7 +1,6 @@
 #ifndef ESPERATTO_GAME
 #define ESPERATTO_GAME
 #include "../Node/Node.h"
-#include "../Node/NodeSubTypes.h"
 #include "../ThreadWorker/ThreadWorker.h"
 #include "../Camera/Camera.h"
 #include "../Keyboard/Keyboard.h"
@@ -25,10 +24,6 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 #include <vector>
-
-namespace _Esperatto {
-	class RootNode : public Esperatto::Subdata {};
-} // namespace _Esperatto
 
 namespace Esperatto {
 	struct Configuration {
@@ -67,8 +62,7 @@ namespace Esperatto {
 		bool shouldStop = false;
 		Configuration config;
 	  public:
-		Node rootNode =
-		    Node(shared_ptr<_Esperatto::RootNode>(new _Esperatto::RootNode()));
+		Node rootNode;
 		shared_ptr<ThreadWork> threadWork =
 		    shared_ptr<ThreadWork>(new ThreadWork());
 		Esperatto::Screen display;

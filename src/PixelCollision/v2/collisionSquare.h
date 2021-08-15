@@ -3,13 +3,13 @@
 
 #include <map>
 #include <string>
-// #include "../../Image/Image.h"
 #include "../../Node/Node.h"
-#include "../../Node/NodeSubTypes.h"
 
-namespace Esperatto {
-	class CollisionSquare : public Subdata {
-	  private:
+namespace Esperatto
+{
+	class CollisionSquare
+	{
+	private:
 		bool onX = true;
 		Coordinates first;
 		Coordinates second;
@@ -27,7 +27,7 @@ namespace Esperatto {
 		*/
 		vector<CollisionSquare> subSquares = vector<CollisionSquare>();
 
-	  public:
+	public:
 		CollisionSquare(const Coordinates &a, const Coordinates &b, bool onX);
 		bool Intersects(const CollisionSquare &otherSquare) const;
 		void declareParent(Node *parent);
@@ -35,6 +35,14 @@ namespace Esperatto {
 		void setSecondCoords(const Coordinates &coords);
 		void addSubSquare(CollisionSquare sub);
 		string toString();
+	};
+
+	class CollisionSquareNode : public Node, public CollisionSquare
+	{
+	public:
+		CollisionSquareNode(const Coordinates &a, const Coordinates &b, bool onX) : CollisionSquare(a, b, onX){
+			this->declareParent(this);
+		};
 	};
 } // namespace Esperatto
 

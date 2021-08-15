@@ -37,11 +37,11 @@ $(OUT_DIR)/Physics.o: ./src/Physics/headers/Physics.h ./src/Physics/Physics.cpp
 $(OUT_DIR)/Screen.o:  ./src/Screen/Screen.cpp ./src/Screen/Screen.h
 	$(CXX) $(CXXFLAGS)  -c ./src/Screen/Screen.cpp -fPIC -o "$(OUT_DIR)/Screen.o"
 
-$(OUT_DIR)/NodeSubTypes.o: ./src/Node/NodeSubTypes.h ./src/Node/NodeSubTypes.cpp
-	$(CXX) $(CXXFLAGS) -c ./src/Node/NodeSubTypes.cpp -fPIC -o "$(OUT_DIR)/NodeSubTypes.o"
+# $(OUT_DIR)/NodeSubTypes.o: ./src/Node/NodeSubTypes.h ./src/Node/NodeSubTypes.cpp
+# 	$(CXX) $(CXXFLAGS) -c ./src/Node/NodeSubTypes.cpp -fPIC -o "$(OUT_DIR)/NodeSubTypes.o"
 
-$(OUT_DIR)/Node.o: $(OUT_DIR)/NodeSubTypes.o ./src/Node/Node.h ./src/Node/Node.cpp
-	$(CXX) $(CXXFLAGS) $(OUT_DIR)/NodeSubTypes.o -c ./src/Node/Node.cpp -fPIC -o "$(OUT_DIR)/Node.o"
+$(OUT_DIR)/Node.o: ./src/Node/Node.h ./src/Node/Node.cpp 
+	$(CXX) $(CXXFLAGS) -c ./src/Node/Node.cpp -fPIC -o "$(OUT_DIR)/Node.o"
 
 $(OUT_DIR)/Camera.o: ./src/Camera/Camera.cpp ./src/Camera/Camera.h
 	$(CXX) $(CXXFLAGS)  -c ./src/Camera/Camera.cpp -fPIC -o "$(OUT_DIR)/Camera.o"
