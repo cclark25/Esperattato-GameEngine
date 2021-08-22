@@ -10,13 +10,18 @@ namespace Esperatto
 		return "{" + to_string(this->x) + "," + to_string(this->y) + "}";
 	}
 
-	Node::Node()
+	Node::Node() : parent(this)
 	{
 		return;
 	}
 
-	Node::~Node(){
-
+	Node::~Node()
+	{
+		for (NodeRelationship::Child *child : this->children)
+		{
+			delete child;
+		}
+		this->children.clear();
 	}
 
 	void Node::move(double x, double y)
@@ -58,36 +63,36 @@ namespace Esperatto
 
 	double Node::getRotationInParent() { return this->rotationRadians; }
 
-	void Node::addChild(Node* child)
+	void Node::addChild(Node &child)
 	{
-		this->children.insert(child);
-		if (child->parent == nullptr)
+		this->children.insert(new NodeRelationship::Child(this, child.parent));
+	}
+
+	void Node::removeChild(Node &childToRemove)
+	{
+		for (NodeRelationship::Child *child : this->children)
 		{
-			child->parent = this;
-		}
-		else
-		{
-			throw new logic_error(
-				"This child being added has a parent already. Please remove "
-				"the child from its previous parent before adding it as a "
-				"child here.");
+			if (child->getPointer() == &childToRemove)
+			{
+				delete child;
+				this->children.erase(child);
+				break;
+			}
 		}
 	}
 
-	void Node::removeChild(Node* child) { this->children.erase(child); }
-
 	Coordinates Node::getGlobalPosition()
 	{
-		Node* level = this;
+		Node *level = this;
 		Coordinates result = {0, 0};
 
 		while (true)
 		{
 			result.x += level->xPosition;
 			result.y += level->yPosition;
-			if (level->parent != nullptr)
+			if (!level->parent.isDeleted())
 			{
-				level = level->parent;
+				level = level->parent.getPointer();
 			}
 			else
 			{
@@ -99,15 +104,15 @@ namespace Esperatto
 
 	double Node::getGlobalRotation()
 	{
-		Node* level = this;
+		Node *level = this;
 		double result = 0;
 
 		while (true)
 		{
 			result += level->rotationRadians;
-			if (level->parent != nullptr)
+			if (!level->parent.isDeleted())
 			{
-				level = level->parent;
+				level = level->parent.getPointer();
 			}
 			else
 			{
@@ -119,15 +124,15 @@ namespace Esperatto
 
 	double Node::getGlobalXScale()
 	{
-		Node* level = this;
+		Node *level = this;
 		double result = 0;
 
 		while (true)
 		{
 			result += level->xScale;
-			if (level->parent != nullptr)
+			if (!level->parent.isDeleted())
 			{
-				level = level->parent;
+				level = level->parent.getPointer();
 			}
 			else
 			{
@@ -139,15 +144,15 @@ namespace Esperatto
 
 	double Node::getGlobalYScale()
 	{
-		Node* level = this;
+		Node *level = this;
 		double result = 0;
 
 		while (true)
 		{
 			result += level->yScale;
-			if (level->parent != nullptr)
+			if (!level->parent.isDeleted())
 			{
-				level = level->parent;
+				level = level->parent.getPointer();
 			}
 			else
 			{
@@ -159,15 +164,15 @@ namespace Esperatto
 
 	double Node::getGlobalZIndex()
 	{
-		Node* level = this;
+		Node *level = this;
 		double result = 0;
 
 		while (true)
 		{
 			result += level->zIndex;
-			if (level->parent != nullptr)
+			if (!level->parent.isDeleted())
 			{
-				level = level->parent;
+				level = level->parent.getPointer();
 			}
 			else
 			{
@@ -213,11 +218,13 @@ namespace Esperatto
 		static SovereignNode sov = {sov, thisTransform, this, globalZIndex};
 		result.insert(sov);
 
-		for (Node* child : this->children)
+		for (NodeRelationship::Child *child : this->children)
 		{
-			result.merge(child->makeNodeSet(sov));
+			if (!child->isDeleted())
+			{
+				result.merge((*child)->makeNodeSet(sov));
+			}
 		}
-		// cout << "i: " << i-- << endl;
 
 		return result;
 	}
@@ -242,9 +249,12 @@ namespace Esperatto
 		SovereignNode sov = {parent, thisTransform, this, globalZIndex};
 		result.insert(sov);
 
-		for (Node* child : this->children)
+		for (NodeRelationship::Child *child : this->children)
 		{
-			result.merge(child->makeNodeSet(sov));
+			if (!child->isDeleted())
+			{
+				result.merge((*child)->makeNodeSet(sov));
+			}
 		}
 		// cout << "i: " << i-- << endl;
 
@@ -253,25 +263,27 @@ namespace Esperatto
 
 	void Node::foreach (function<void(Node)> func)
 	{
-		func(*this);
+		// func(*this);
 
-		for (Node* child : this->children)
+		for (NodeRelationship::Child *child : this->children)
 		{
-			child->foreach (func);
+			(*child)->foreach (func);
 		}
 	}
 
-	multiset<Node*> &Node::getChildren()
+	const multiset<NodeRelationship::Child *> &Node::getChildren()
 	{
 		return this->children;
 		// return *(const multiset<const Node>*)(void*) &this->children;
 	}
 
-	Node* Node::getShared(){
+	Node *Node::getShared()
+	{
 		return this;
 	}
 
-	Bitmap Node::getBitmap(){
+	Bitmap Node::getBitmap()
+	{
 		return nullptr;
 	}
 } // namespace Esperatto

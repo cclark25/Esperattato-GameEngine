@@ -7,7 +7,7 @@ namespace Esperatto
     Physics::Physics()
     {
         this->timeStampOfLastChange = al_get_time();
-    };
+    }
 
     Coordinates Physics::getDifference()
     {

@@ -9,8 +9,6 @@
 #include "../Image/Image.h"
 #include "../Keyboard/Keyboard.h"
 #include "../Node/Node.h"
-#include "../PixelCollision/CollisionTree.h"
-#include "../PixelCollision/PixelCollision.h"
 #include "../Process/Process.h"
 #include "../Screen/Screen.h"
 #include "../ThreadWorker/ThreadWorker.h"
@@ -18,7 +16,7 @@
 #include "../XM/XM.h"
 #include "../core/Game.h"
 #include "../Physics/headers/Physics.h"
-#include "../PixelCollision/v2/collisionSquare.h"
+#include "../PixelCollision/collisionSquare.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_image.h>

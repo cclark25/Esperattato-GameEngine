@@ -12,9 +12,8 @@ private:
     {
         ParentClass *parent = nullptr;
         ChildClass *child = nullptr;
+        unsigned char refCount = 0;
     };
-    std::shared_ptr<coreData> core;
-    bool isParent = false;
 
 public:
     class ParentChildError : public std::logic_error
@@ -37,16 +36,17 @@ public:
     template <class thisClass, class otherClass, bool inversed>
     class EntryPoint
     {
-    private:
-        std::shared_ptr<coreData> core;
+    public:
+        coreData* core = nullptr;
         EntryPoint(const EntryPoint<thisClass, otherClass, inversed> &other)
         {
+            return;
         }
 
     public:
-        EntryPoint(thisClass *ptr)
+        EntryPoint(thisClass *ptr): core(new coreData())
         {
-            this->core = std::shared_ptr<coreData>(new coreData());
+            // this->core = std::shared_ptr<coreData>(new coreData());
             if (inversed)
             {
                 this->core->child = (ChildClass *)(void *)ptr;
@@ -55,8 +55,9 @@ public:
             {
                 this->core->parent = (ParentClass *)(void *)ptr;
             }
+            this->core->refCount++;
         }
-        EntryPoint(thisClass *parentPtr, EntryPoint<otherClass, thisClass, !inversed> &child)
+        EntryPoint(thisClass *parentPtr, EntryPoint<otherClass, thisClass, !inversed> &child): core(child.core)
         {
             void **pointer = nullptr;
             if (inversed)
@@ -72,8 +73,9 @@ public:
             {
                 throw ExistingParentException("ParentChild pairing already has a parent.");
             }
-            this->core = child.core;
+            // this->core = child.core;
             *pointer = parentPtr;
+            this->core->refCount++;
         }
         ~EntryPoint()
         {
@@ -87,6 +89,12 @@ public:
                 pointer = (void **)&(this->core->parent);
             }
             *pointer = nullptr;
+
+            this->core->refCount--;
+            if(this->core->refCount == 0){
+                delete this->core;
+                this->core = 0;
+            }
         }
 
         otherClass &operator*() const
@@ -128,7 +136,40 @@ public:
             return (otherClass *)(*pointer);
         }
 
-        bool operator==(EntryPoint<thisClass, otherClass, inversed> &other) const {
+        bool isDeleted()
+        {
+            void **pointer = nullptr;
+            if (inversed)
+            {
+                pointer = (void **)&(this->core->parent);
+            }
+            else
+            {
+                pointer = (void **)&(this->core->child);
+            }
+
+            if(!this->core){
+                throw ParentChildError("Somehow the core data is a null ptr.");
+            }
+            return *pointer == nullptr;
+        }
+
+        otherClass* getPointer(){
+            void **thisPointer = nullptr;
+            if (inversed)
+            {
+                thisPointer = (void **)&(this->core->parent);
+            }
+            else
+            {
+                thisPointer = (void **)&(this->core->child);
+            }
+
+            return (otherClass*) *thisPointer;
+        }
+
+        bool operator==(EntryPoint<thisClass, otherClass, inversed> &other) const
+        {
             void **thisPointer = nullptr;
             if (inversed)
             {

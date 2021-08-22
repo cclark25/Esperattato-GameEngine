@@ -20,7 +20,7 @@ namespace Esperatto
 		}
 		camera.setCanvasSize(config.screenWidth, config.screenHeight);
 		camera.setCanvasColor(config.canvasColor);
-		rootNode.addChild(camera.getShared());
+		rootNode.addChild(camera);
 	}
 
 	void Game::StartGame()

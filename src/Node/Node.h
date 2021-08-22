@@ -2,6 +2,7 @@
 #define ESPERATTO_NODE_DEF
 
 #include "../Types.h"
+#include "../lib/ParentChild.h"
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -21,6 +22,9 @@ namespace Esperatto
 	struct SovereignNode;
 	class NodeSubtype;
 	class Subdata;
+	class Node;
+	typedef ParentChild<Node,Node> NodeRelationship;
+
 	class Node
 	{
 
@@ -35,8 +39,8 @@ namespace Esperatto
 		double yScale = 1;
 		double zIndex = 0;
 		unsigned int referenceCount = 0;
-		Node* parent = nullptr;
-		multiset<Node*> children;
+		NodeRelationship::Parent parent;
+		multiset<NodeRelationship::Child*> children;
 
 		Transform getTransform();
 
@@ -60,9 +64,9 @@ namespace Esperatto
 		Coordinates getCenterOfRotation();
 		void setCenterOfRotation(double x, double y);
 
-		void addChild(Node* child);
-		void removeChild(Node* child);
-		multiset<Node*> &getChildren();
+		void addChild(Node & child);
+		void removeChild(Node & child);
+		const multiset<NodeRelationship::Child*> &getChildren();
 
 		Coordinates getGlobalPosition();
 		double getGlobalRotation();
