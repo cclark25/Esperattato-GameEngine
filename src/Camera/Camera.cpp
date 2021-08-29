@@ -43,9 +43,15 @@ namespace Esperatto
 
 		for (SovereignNode node : rootNode.makeNodeSet(thisTransform))
 		{
-			if (this->shouldDraw(node.transformation, 0, 0, 0))
+			Transform newTransform;
+			al_identity_transform(&newTransform);
+			al_compose_transform(&newTransform, &node.transformation);
+			Transform additionalTransform = node.node->getTransform();
+			al_compose_transform(&newTransform, &additionalTransform);
+
+			if (this->shouldDraw(newTransform, 0, 0, 0))
 			{
-				al_use_transform(&node.transformation);
+				al_use_transform(&newTransform);
 				Bitmap layer = node.node->getBitmap();
 
 				if (layer)

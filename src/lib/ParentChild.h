@@ -37,14 +37,14 @@ public:
     class EntryPoint
     {
     public:
-        coreData* core = nullptr;
+        coreData *core = nullptr;
         EntryPoint(const EntryPoint<thisClass, otherClass, inversed> &other)
         {
             return;
         }
 
     public:
-        EntryPoint(thisClass *ptr): core(new coreData())
+        EntryPoint(thisClass *ptr) : core(new coreData())
         {
             // this->core = std::shared_ptr<coreData>(new coreData());
             if (inversed)
@@ -57,7 +57,7 @@ public:
             }
             this->core->refCount++;
         }
-        EntryPoint(thisClass *parentPtr, EntryPoint<otherClass, thisClass, !inversed> &child): core(child.core)
+        EntryPoint(thisClass *parentPtr, EntryPoint<otherClass, thisClass, !inversed> &child) : core(child.core)
         {
             void **pointer = nullptr;
             if (inversed)
@@ -91,7 +91,8 @@ public:
             *pointer = nullptr;
 
             this->core->refCount--;
-            if(this->core->refCount == 0){
+            if (this->core->refCount == 0)
+            {
                 delete this->core;
                 this->core = 0;
             }
@@ -148,13 +149,15 @@ public:
                 pointer = (void **)&(this->core->child);
             }
 
-            if(!this->core){
+            if (!this->core)
+            {
                 throw ParentChildError("Somehow the core data is a null ptr.");
             }
             return *pointer == nullptr;
         }
 
-        otherClass* getPointer(){
+        otherClass *getPointer()
+        {
             void **thisPointer = nullptr;
             if (inversed)
             {
@@ -165,7 +168,7 @@ public:
                 thisPointer = (void **)&(this->core->child);
             }
 
-            return (otherClass*) *thisPointer;
+            return (otherClass *)*thisPointer;
         }
 
         bool operator==(EntryPoint<thisClass, otherClass, inversed> &other) const

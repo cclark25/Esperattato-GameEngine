@@ -42,7 +42,7 @@ namespace Esperatto
 		NodeRelationship::Parent parent;
 		multiset<NodeRelationship::Child*> children;
 
-		Transform getTransform();
+		virtual Transform getTransform();
 
 	public:
 		Node();
@@ -88,6 +88,8 @@ namespace Esperatto
 		{
 			return first.zIndex < second.zIndex;
 		};
+		
+		friend class Camera;
 	};
 
 	struct SovereignNode

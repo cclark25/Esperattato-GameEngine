@@ -277,6 +277,12 @@ namespace Esperatto
 		// return *(const multiset<const Node>*)(void*) &this->children;
 	}
 
+	Transform Node::getTransform(){
+		Transform transform = Transform();
+		al_identity_transform(&transform);
+		return transform;
+	}
+
 	Node *Node::getShared()
 	{
 		return this;

@@ -27,24 +27,34 @@ int main()
 	double velocityBasis = 50;
 
 	CollisionSquareNode first = CollisionSquareNode(
-		Coordinates({0, 0}), Coordinates({50, 50}), true);
+		Coordinates({0, 0}), Coordinates({42, -49}), true);
+	CollisionSquare secondSquare = CollisionSquare(Coordinates({10, 0}), Coordinates({32, -49}), true);
+	CollisionSquare thirdSquare = CollisionSquare(Coordinates({0, -12}), Coordinates({42, -37}), true);
+	first.addSubSquare(secondSquare);
+	first.addSubSquare(thirdSquare);
 
-	auto a = Image("test/Test_Files/green-box.png");
+	auto a = Image("test/Test_Files/blue-plus.png");
 	first.addChild(a);
+	a.setZIndexInParent(-1);
 	game.rootNode.addChild(first);
 	Camera cam1(game.display);
 	game.camera = cam1;
 	first.addChild(game.camera);
 	first.setPositionInParent(0, 0);
+	first.setZIndexInParent(1);
 	game.camera.setPositionInParent(-51, 43);
 
 	vector<CollisionSquareNode *> obstacles;
-	for (int i = 1; i <= 10; i++)
+	for (int i = 1; i <= 1; i++)
 	{
 		CollisionSquareNode *second = new CollisionSquareNode(
-			Coordinates({0, 0}), Coordinates({50, 50}), true);
+			Coordinates({0, 0}), Coordinates({50, -50}), true);
+		// CollisionSquare secondSquare = CollisionSquare(Coordinates({0, 0}), Coordinates({25, -25}), true);
+		// secondSquare.addSubSquare(CollisionSquare(Coordinates({0, 0}), Coordinates({12, -12}), true));
+		// second->addSubSquare(secondSquare);
 
 		auto b = new Image("test/Test_Files/red-box.png");
+		b->setZIndexInParent(-1);
 		second->addChild(*b);
 		game.rootNode.addChild(*second);
 		second->setPositionInParent(101 * i, -101 * i);
@@ -79,6 +89,18 @@ int main()
 
 	game.threadWork->innerQueue.push(mover);
 	// game.threadWork->innerQueue.push(cameraMover);
+
+	KeySubscription toggleHitboxes = {[&first](KEY_EVENTS e, unsigned int keycode,
+															unsigned int keymodFlags)
+						  {
+							  first.toggleDrawBoxes(true);
+						  },
+						  [&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
+															unsigned int keymodFlags)
+						  {
+							  first.toggleDrawBoxes(false);
+						  }};
+	game.keyboard.subscribeToggle(ALLEGRO_KEY_T, 0, toggleHitboxes);
 
 	KeySubscription up = {[&first, &physics, velocityBasis](KEY_EVENTS e, unsigned int keycode,
 															unsigned int keymodFlags)

@@ -34,6 +34,16 @@ namespace Esperatto
 			loadedMap.insert_or_assign(path, data);
 		}
 	}
+	Image::Image(unsigned int width, unsigned int height, Color fillColor)
+	{
+		data = shared_ptr<imageData>(new imageData());
+		data->internal = al_create_bitmap(width, height);
+		Bitmap previous = al_get_target_bitmap();
+		al_set_target_bitmap(this->data->internal);
+		al_clear_to_color(fillColor);
+		al_set_target_bitmap(previous);
+		data->referenceCount = 1;
+	}
 
 	Bitmap Image::getBitmap() { return this->data->internal; }
 	Image::~Image()

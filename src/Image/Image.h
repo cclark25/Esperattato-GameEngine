@@ -24,6 +24,7 @@ namespace Esperatto
 
 	public:
 		Image(string path);
+		Image(unsigned int width, unsigned int height, Color fillColor = al_map_rgb(255, 255, 255));
 		Bitmap getBitmap();
 		~Image();
 	};
