@@ -20,7 +20,7 @@ $(OUT_DIR)/Game.o:  $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
 
 lua-mode: ./BUILD/Esperattato.o $(OUT_DIR)/lua5.4
-	$(CXX) -W -Wall -g -I$(OUT_DIR)/lua5.4/include src/app-modes/lua-mode/lua-mode.cpp -L$(OUT_DIR)/lua5.4/lib/ -llua -ldl -lallegro_audio
+	$(CXX) $(CXXFLAGS) $(libxmFLAGS) -g -I$(OUT_DIR)/lua5.4/include src/app-modes/lua-mode/*.cpp ./BUILD/Esperattato.o -L$(OUT_DIR)/lua5.4/lib/ -llua -ldl -lallegro_audio -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
 test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) "$(FILENAME)" BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread

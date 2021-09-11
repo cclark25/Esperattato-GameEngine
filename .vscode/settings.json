@@ -55,6 +55,7 @@
         "mutex": "cpp",
         "new": "cpp",
         "shared_mutex": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "function": "cpp"
     }
 }
