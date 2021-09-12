@@ -5,6 +5,7 @@
 #include <string>
 #include <functional>
 #include <memory>
+#include <iostream>
 #include "../../../BUILD/object_files/lua5.4/include/lua.hpp"
 
 #define NumberField(num) (Esperatto::Field(Esperatto::AllowedDataType::number, new lua_Number(num)))
@@ -16,7 +17,8 @@
 namespace Esperatto
 {
     class Table;
-    typedef std::function<int(lua_State *)> LuableFunction;
+    typedef int(*LuableFunction)(lua_State*) ;
+    // typedef std::function<int(lua_State *)> LuableFunction;
     enum AllowedDataType
     {
         nil,
@@ -51,6 +53,7 @@ namespace Esperatto
 
     class Table
     {
+    private:
     public:
         std::shared_ptr<std::map<std::string, Field>> data;
         Table();

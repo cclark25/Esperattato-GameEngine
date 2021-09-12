@@ -86,10 +86,20 @@ int createTestObject(lua_State *state)
     obj1.insert("C", NilField());
     obj1.insert("D", BooleanField(true));
 
-    // obj2.insert("A2", NumberField(n*2));
-    // obj2.insert("B2", StringField("Sub Object Field 1"));
+    obj2.insert("A2", NumberField(n * 2));
+    obj2.insert("B2", StringField("Sub Object Field 1"));
 
-    // obj1.insert("SUB", TableField(obj2));
+    obj1.insert("SUB", TableField(obj2));
+
+    static int i = 0;
+    LuableFunction x = [](lua_State* s){
+        cout << "Test Function called #" << i*3 << ": " << (i % 2 ? "Even" : "Odd") << endl;
+        lua_pushnumber(s, i*3);
+        return 1;
+        };
+    i++;
+    auto f = Field(AllowedDataType::function, &x );
+    obj1.insert("FUN", f);
 
     compileTable(state, obj1);
 
@@ -128,6 +138,14 @@ int main(int argc, char **argv)
         lua_pop(state, 1);
     }
     result = lua_pcall(state, 0, LUA_MULTRET, 0);
+    const char *message = lua_tostring(state, -1);
+    if (message != nullptr)
+        puts(message);
+    else
+    {
+        cout << "Unknown error occurred." << endl;
+    }
+    lua_pop(state, 1);
 
     lua_close(state);
 

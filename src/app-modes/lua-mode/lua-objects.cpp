@@ -2,6 +2,13 @@
 
 namespace Esperatto
 {
+    int executeLuaFunction(lua_State *state)
+    {
+        LuableFunction *fun = (LuableFunction *)lua_touserdata(state, lua_upvalueindex(1));
+
+        return (*fun)(state);
+    }
+
     Table::Table()
     {
         this->data = std::shared_ptr<std::map<std::string, Field>>(new std::map<std::string, Field>);
@@ -38,7 +45,7 @@ namespace Esperatto
             delete (std::string *)this->data;
             break;
         case function:
-            delete (LuableFunction *)this->data;
+            // delete (LuableFunction *)this->data;
             break;
         // case userdata:
         //     delete (bool*) this->data;
@@ -64,14 +71,8 @@ namespace Esperatto
         lua_newtable(state);
         int top = lua_gettop(state);
 
-        std::vector<std::map<std::string, Esperatto::Field>::iterator> tableFields;
-
         for (auto it = definition.data->begin(); it != definition.data->end(); ++it)
         {
-            if(it->second.data->type == AllowedDataType::table){
-                tableFields.push_back(it);
-                continue;
-            }
 
             const char *key = it->first.c_str();
             lua_pushstring(state, key);
@@ -90,16 +91,24 @@ namespace Esperatto
             case string:
                 lua_pushstring(state, ((std::string *)it->second.data->data)->c_str());
                 break;
+            case table:
+                compileTable(state, *((Table *)it->second.data->data));
+
+                lua_settable(state, top);
+                continue;
             case function:
-                // TODO: add support for function members.
+                LuableFunction *fun = (LuableFunction *)it->second.data->data;
+                LuableFunction *dataHolder = (LuableFunction *)lua_newuserdata(state, sizeof *fun);
+                *dataHolder = *fun;
+
+                lua_pushcclosure(state, executeLuaFunction, 1);
                 break;
-            // case userdata:
-            //     delete (bool*) this->data;
-            //     break;
-            // case thread:
-            //     delete (bool*) this->data;
-            //     break;
-            
+                // case userdata:
+                //     delete (bool*) this->data;
+                //     break;
+                // case thread:
+                //     delete (bool*) this->data;
+                //     break;
             }
 
             lua_settable(state, top);
