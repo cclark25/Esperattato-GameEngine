@@ -5,8 +5,16 @@ namespace Esperatto
     int executeLuaFunction(lua_State *state)
     {
         LuableFunction *fun = (LuableFunction *)lua_touserdata(state, lua_upvalueindex(1));
+        PointerTracker *ptr = (PointerTracker *)lua_touserdata(state, lua_upvalueindex(2));
 
-        return (*fun)(state);
+        if (ptr->isValid())
+        {
+            return (*fun)(state);
+        }
+        else {
+            lua_pushnil(state);
+            return 1;
+        }
     }
 
     Table::Table()
@@ -66,10 +74,11 @@ namespace Esperatto
         this->data->data = data;
     }
 
-    int compileTable(lua_State *state, Table definition)
+    int Luable::compileTable(lua_State *state)
     {
         lua_newtable(state);
         int top = lua_gettop(state);
+        Table definition = this->toLuaTable();
 
         for (auto it = definition.data->begin(); it != definition.data->end(); ++it)
         {
@@ -92,16 +101,16 @@ namespace Esperatto
                 lua_pushstring(state, ((std::string *)it->second.data->data)->c_str());
                 break;
             case table:
-                compileTable(state, *((Table *)it->second.data->data));
-
-                lua_settable(state, top);
-                continue;
+                ((Luable *)it->second.data->data)->compileTable(state);
+                break;
             case function:
                 LuableFunction *fun = (LuableFunction *)it->second.data->data;
                 LuableFunction *dataHolder = (LuableFunction *)lua_newuserdata(state, sizeof *fun);
+                PointerTracker *thisTracker = (PointerTracker *)lua_newuserdata(state, sizeof *(this->luableKey));
+                *thisTracker = *(this->luableKey);
                 *dataHolder = *fun;
 
-                lua_pushcclosure(state, executeLuaFunction, 1);
+                lua_pushcclosure(state, executeLuaFunction, 2);
                 break;
                 // case userdata:
                 //     delete (bool*) this->data;

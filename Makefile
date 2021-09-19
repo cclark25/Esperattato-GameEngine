@@ -6,6 +6,8 @@ CFLAGS=  -Wall -pedantic -ggdb -fPIC
 libxmFLAGS= -I./Dependencies/libxm/src -I./Dependencies/libxm/include -I/usr/include
 allegroFlags= -lallegro -lallegro_image -lallegro_primitives -lallegro_audio
 # RM= rm -vf
+library= ./src/library/**/*.cpp
+dependencies= $(OUT_DIR)/libxm/*.o
 
 OUT_DIR=./BUILD/object_files
 # DEPENDENCIES=./Dependencies/AllegroCPPWrappers/BUILD/AllegroWrappers.o
@@ -14,13 +16,13 @@ $(OUT_DIR)/Game.o:  $(OUT_DIR)/XM.o $(OUT_DIR)/Animation.o $(OUT_DIR)/Screen.o $
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) -c ./src/core/Game.cpp -o "$(OUT_DIR)/Game.o" -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -fPIC
 
 ./BUILD/Esperattato.o: ./src/library/**/*.cpp ./src/library/**/*.h $(OUT_DIR)/libxm
-	$(CXX) $(CFLAGS) $(CXXFLAGS) ${allegroFlags} $(libxmFLAGS) $(OUT_DIR)/libxm/*.o ./src/library/**/*.cpp  -shared -o BUILD/Esperattato.o
+	$(CXX) $(CFLAGS) $(CXXFLAGS) ${allegroFlags} $(libxmFLAGS) $(dependencies) $(library) -L$(OUT_DIR)/lua5.4/lib/ -llua -ldl -shared -o BUILD/Esperattato.o
 
 # $(DEPENDENCIES):
 # 	@$(MAKE) -C Dependencies/AllegroCPPWrappers 
 
-lua-mode: ./BUILD/Esperattato.o $(OUT_DIR)/lua5.4
-	$(CXX) $(CXXFLAGS) $(libxmFLAGS) -g -I$(OUT_DIR)/lua5.4/include src/app-modes/lua-mode/*.cpp ./BUILD/Esperattato.o -L$(OUT_DIR)/lua5.4/lib/ -llua -ldl -lallegro_audio -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
+lua-mode: $(OUT_DIR)/lua5.4 ./src/library/**/*.cpp ./src/library/**/*.h $(OUT_DIR)/libxm
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(allegroFlags) $(libxmFLAGS) -I$(OUT_DIR)/lua5.4/include $(dependencies) $(library) src/app-modes/lua-mode/*.cpp -L$(OUT_DIR)/lua5.4/lib/ -llua -ldl  -lallegro_audio -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread
 
 test: ./BUILD/Esperattato.o
 	$(CXX) $(CXXFLAGS) $(libxmFLAGS) "$(FILENAME)" BUILD/Esperattato.o -lallegro -lallegro_image -lallegro_primitives -lallegro_audio -lpthread

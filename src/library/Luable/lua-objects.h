@@ -7,18 +7,21 @@
 #include <memory>
 #include <iostream>
 #include "../../../BUILD/object_files/lua5.4/include/lua.hpp"
+#include "./pointer-tracker.h"
 
 #define NumberField(num) (Esperatto::Field(Esperatto::AllowedDataType::number, new lua_Number(num)))
 #define StringField(str) (Esperatto::Field(Esperatto::AllowedDataType::string, new std::string(str)))
 #define NilField() (Esperatto::Field(Esperatto::AllowedDataType::nil, nullptr))
 #define BooleanField(b) (Esperatto::Field(Esperatto::AllowedDataType::boolean, new bool(b)))
-#define TableField(t) (Esperatto::Field(Esperatto::AllowedDataType::table, new Table(t)))
+#define TableField(t) (Esperatto::Field(Esperatto::AllowedDataType::table, &t))
+
+#define ReturnString(s,t) lua_pushstring(s, std::string(t).c_str() ); return 1;
 
 namespace Esperatto
 {
     class Table;
-    typedef int(*LuableFunction)(lua_State*) ;
-    // typedef std::function<int(lua_State *)> LuableFunction;
+    typedef int (*LuableFunction)(lua_State *);
+    
     enum AllowedDataType
     {
         nil,
@@ -63,7 +66,25 @@ namespace Esperatto
         friend struct Field;
     };
 
-    int compileTable(lua_State *state, Table definition);
+    class Luable
+    {
+    private:
+        shared_ptr<PointerTracker> luableKey;
+    public:
+        Luable(){
+            this->luableKey = shared_ptr<PointerTracker>(new PointerTracker(this));
+        }
+        ~Luable(){
+            this->luableKey->remove();
+        }
+        virtual Table toLuaTable(){
+            return Table();
+        }
+        
+        int compileTable(lua_State *state);
+    };
+
+    
 }
 
 #endif

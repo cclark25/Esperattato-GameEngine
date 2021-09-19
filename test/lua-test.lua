@@ -8,27 +8,29 @@ end
 
 
 
-print("Lua called.")
-createSquare(10,-10);
-createSquare(50.5,-50.5);
-createSquare(100.876,-100.145);
+-- print("Lua called.")
+-- createSquare(10,-10);
+-- createSquare(50.5,-50.5);
+-- createSquare(100.876,-100.145);
 
-A = {  }
+-- A = {  }
 
-while true do
-TestObject = createTestObject();
-print(TestObject.A);
-print(TestObject.B);
-print(TestObject.C);
-print(TestObject.D);
-print((TestObject.SUB.A2));
-print(TestObject.SUB.B2);
-print(TestObject.FUN())
--- print(type(TestObject))
-
+-- while true do
+-- TestObject = createTestObject();
+-- print(TestObject.A);
+-- print(TestObject.B);
+-- print(TestObject.C);
+-- print(TestObject.D);
+-- print((TestObject.SUB.A2));
+-- print(TestObject.SUB.B2);
+-- print(TestObject.FUN())
+-- -- print(type(TestObject))
+print("Started")
+print(Game.ABC)
+print(Game.fun())
 -- for ____, s in ipairs(
---     __TS__ObjectKeys(TestObject)
+--     __TS__ObjectKeys(Game)
 -- ) do
---     print( type(TestObject.FUN))
+--     print(s)
 -- end
-end
+-- end

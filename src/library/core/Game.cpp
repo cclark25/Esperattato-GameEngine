@@ -53,4 +53,18 @@ namespace Esperatto
 
 	void Game::StopGame() { this->shouldStop = true; }
 
+	Table Game::toLuaTable()
+	{
+		Table out;
+
+		out.insert("ABC", StringField("Field Value"));
+
+		LuableFunction* fun = new LuableFunction([](lua_State*s){
+			ReturnString(s, "String Result");
+		});
+		out.insert("fun", Field(AllowedDataType::function, fun));
+
+		return out;
+	}
+
 } // namespace Esperatto

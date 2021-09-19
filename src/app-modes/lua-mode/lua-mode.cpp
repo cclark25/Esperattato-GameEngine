@@ -6,7 +6,7 @@
 #include "../../../BUILD/object_files/lua5.4/include/lua.h"
 #include "../../../BUILD/object_files/lua5.4/include/lualib.h"
 #include "../../../BUILD/object_files/lua5.4/include/lauxlib.h"
-#include "./lua-objects.h"
+#include "../../library/Luable/lua-objects.h"
 
 #define ADD_TO_LUA(state, name)     \
     lua_pushcfunction(state, name); \
@@ -70,42 +70,6 @@ int createSquare(lua_State *state)
     return 0;
 }
 
-int createTestObject(lua_State *state)
-{
-    int paramCount = lua_gettop(state);
-    if (paramCount != 0)
-    {
-        throw "error";
-    }
-
-    Table obj1, obj2;
-    static int n = 0;
-
-    obj1.insert("A", NumberField(n++));
-    obj1.insert("B", StringField("Test Field 1"));
-    obj1.insert("C", NilField());
-    obj1.insert("D", BooleanField(true));
-
-    obj2.insert("A2", NumberField(n * 2));
-    obj2.insert("B2", StringField("Sub Object Field 1"));
-
-    obj1.insert("SUB", TableField(obj2));
-
-    static int i = 0;
-    LuableFunction x = [](lua_State* s){
-        cout << "Test Function called #" << i*3 << ": " << (i % 2 ? "Even" : "Odd") << endl;
-        lua_pushnumber(s, i*3);
-        return 1;
-        };
-    i++;
-    auto f = Field(AllowedDataType::function, &x );
-    obj1.insert("FUN", f);
-
-    compileTable(state, obj1);
-
-    return 1;
-}
-
 using namespace std;
 int main(int argc, char **argv)
 {
@@ -125,10 +89,12 @@ int main(int argc, char **argv)
 
     lua_State *state = luaL_newstate();
     luaL_openlibs(state);
-    // lua_pushcfunction(state, makeString); lua_setglobal(state, "makeString");
+    
     ADD_TO_LUA(state, repeatString);
     ADD_TO_LUA(state, createSquare);
-    ADD_TO_LUA(state, createTestObject);
+    
+    game.compileTable(state);
+    lua_setglobal(state, "Game");
 
     int result = luaL_loadfile(state, luaPath.c_str());
     if (result != LUA_OK)
@@ -139,13 +105,12 @@ int main(int argc, char **argv)
     }
     result = lua_pcall(state, 0, LUA_MULTRET, 0);
     const char *message = lua_tostring(state, -1);
+    cout << "Lua Script Response Code: " << result << endl;
     if (message != nullptr)
         puts(message);
     else
     {
-        cout << "Unknown error occurred." << endl;
     }
-    lua_pop(state, 1);
 
     lua_close(state);
 

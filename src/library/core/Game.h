@@ -17,14 +17,17 @@
 #include "../core/Game.h"
 #include "../Physics/headers/Physics.h"
 #include "../PixelCollision/collisionSquare.h"
+#include "../Luable/lua-objects.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 #include <vector>
 
-namespace Esperatto {
-	struct Configuration {
+namespace Esperatto
+{
+	struct Configuration
+	{
 		/**
 		 * @param workerCount - Number of ThreadWorkers to create to process
 		 * data in the game.
@@ -52,17 +55,19 @@ namespace Esperatto {
 		double screenPixelStretchX;
 		double screenPixelStretchY;
 
-		ALLEGRO_COLOR canvasColor; 
+		ALLEGRO_COLOR canvasColor;
 	};
-	class Game {
-	  private:
+	class Game : public Luable
+	{
+	private:
 		vector<ThreadWorker> workers;
 		bool shouldStop = false;
 		Configuration config;
-	  public:
+
+	public:
 		Node rootNode;
 		shared_ptr<ThreadWork> threadWork =
-		    shared_ptr<ThreadWork>(new ThreadWork());
+			shared_ptr<ThreadWork>(new ThreadWork());
 		Esperatto::Screen display;
 		Camera camera;
 		Keyboard keyboard;
@@ -70,6 +75,8 @@ namespace Esperatto {
 		Game(Configuration &config);
 		void StartGame();
 		void StopGame();
+
+		Table toLuaTable();
 	};
 } // namespace Esperatto
 
